@@ -2,7 +2,9 @@ package org.pedroamorim.projetobootcamp.service;
 
 import org.pedroamorim.projetobootcamp.modelo.Cliente;
 import org.pedroamorim.projetobootcamp.notificacao.NotificadorEmail;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AtivacaoClienteService {
     private NotificadorEmail notificadorEmail;
 
