@@ -1,21 +1,21 @@
 package org.pedroamorim.projetobootcamp.service;
 
 import org.pedroamorim.projetobootcamp.modelo.Cliente;
-import org.pedroamorim.projetobootcamp.notificacao.NotificadorEmail;
+import org.pedroamorim.projetobootcamp.notificacao.Notificador;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AtivacaoClienteService {
-    private NotificadorEmail notificadorEmail;
+    private Notificador notificador;
 
-    public AtivacaoClienteService(NotificadorEmail notificadorEmail) {
-        this.notificadorEmail = notificadorEmail;
-        System.out.println("AtivacaoClienteService: " + notificadorEmail);
+    public AtivacaoClienteService(Notificador notificador) {
+        this.notificador = notificador;
+        System.out.println("AtivacaoClienteService: " + notificador);
     }
 
     public void ativar(Cliente cliente){
         cliente.ativar();
 
-        notificadorEmail.notificar(cliente, "Seu cadastro no sistema está ativo!");
+        notificador.notificar(cliente, "Seu cadastro no sistema está ativo!");
     }
 }
