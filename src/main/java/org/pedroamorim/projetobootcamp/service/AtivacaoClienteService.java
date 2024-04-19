@@ -8,6 +8,11 @@ import org.springframework.stereotype.Component;
 public class AtivacaoClienteService {
     private NotificadorEmail notificadorEmail;
 
+    public AtivacaoClienteService(NotificadorEmail notificadorEmail) {
+        this.notificadorEmail = notificadorEmail;
+        System.out.println("AtivacaoClienteService: " + notificadorEmail);
+    }
+
     public void ativar(Cliente cliente){
         cliente.ativar();
 
