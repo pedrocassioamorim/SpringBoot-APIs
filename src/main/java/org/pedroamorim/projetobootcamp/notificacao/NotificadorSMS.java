@@ -1,10 +1,9 @@
 package org.pedroamorim.projetobootcamp.notificacao;
 
 import org.pedroamorim.projetobootcamp.modelo.Cliente;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-@Primary
+@TipoDoNotificador(NivelUrgencia.URGENTE)
 @Component
 public class NotificadorSMS implements Notificador {
 
