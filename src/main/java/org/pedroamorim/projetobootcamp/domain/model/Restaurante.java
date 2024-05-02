@@ -1,19 +1,15 @@
 package org.pedroamorim.projetobootcamp.domain.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.io.Serializable;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@Table(name = "restaurants")
 public class Restaurante{
 
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String nome;
@@ -21,8 +17,7 @@ public class Restaurante{
     @Column(name = "taxa_frete")
     private BigDecimal taxaFrete;
 
-    public Restaurante(Long id, String nome, BigDecimal taxaFrete) {
-        this.id = id;
+    public Restaurante(String nome, BigDecimal taxaFrete) {
         this.nome = nome;
         this.taxaFrete = taxaFrete;
     }
