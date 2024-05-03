@@ -1,4 +1,4 @@
-package org.pedroamorim.projetobootcamp.infraestructure.repository;
+package org.pedroamorim.projetobootcamp.infraestructure.repository.model;
 
 import org.pedroamorim.projetobootcamp.domain.model.Cozinha;
 import org.pedroamorim.projetobootcamp.domain.repository.CozinhaRepository;
