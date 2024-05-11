@@ -1,10 +1,12 @@
-package org.pedroamorim.projetobootcamp.domain.model.adds;
+package org.pedroamorim.projetobootcamp.domain.model;
 
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.Objects;
 
 @Getter
@@ -12,7 +14,7 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-public class Permissao {
+public class Cidade {
 
     @Id
     @EqualsAndHashCode.Include
@@ -20,7 +22,9 @@ public class Permissao {
 
     private String nome;
 
-    private String descricao;
+    @ManyToOne
+    @JoinColumn(name = "estado_id", nullable = false)
+    private Estado estado;
 
     @Override
     public final boolean equals(Object o) {
@@ -29,8 +33,8 @@ public class Permissao {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Permissao permissao = (Permissao) o;
-        return getId() != null && Objects.equals(getId(), permissao.getId());
+        Cidade cidade = (Cidade) o;
+        return getId() != null && Objects.equals(getId(), cidade.getId());
     }
 
     @Override

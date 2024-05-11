@@ -1,7 +1,7 @@
-package org.pedroamorim.projetobootcamp.infraestructure.repository.model.adds;
+package org.pedroamorim.projetobootcamp.infraestructure.repository.model;
 
-import org.pedroamorim.projetobootcamp.domain.model.adds.Permissao;
-import org.pedroamorim.projetobootcamp.domain.repository.adds.PermissaoRepository;
+import org.pedroamorim.projetobootcamp.domain.model.Permissao;
+import org.pedroamorim.projetobootcamp.domain.repository.PermissaoRepository;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;

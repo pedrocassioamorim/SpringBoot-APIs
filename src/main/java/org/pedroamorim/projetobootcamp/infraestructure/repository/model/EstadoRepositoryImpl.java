@@ -1,7 +1,7 @@
-package org.pedroamorim.projetobootcamp.infraestructure.repository.model.adds;
+package org.pedroamorim.projetobootcamp.infraestructure.repository.model;
 
-import org.pedroamorim.projetobootcamp.domain.model.adds.Estado;
-import org.pedroamorim.projetobootcamp.domain.repository.adds.EstadoRepository;
+import org.pedroamorim.projetobootcamp.domain.model.Estado;
+import org.pedroamorim.projetobootcamp.domain.repository.EstadoRepository;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;

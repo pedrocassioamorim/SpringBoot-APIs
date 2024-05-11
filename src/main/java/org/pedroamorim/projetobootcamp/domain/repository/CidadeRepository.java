@@ -1,6 +1,6 @@
-package org.pedroamorim.projetobootcamp.domain.repository.adds;
+package org.pedroamorim.projetobootcamp.domain.repository;
 
-import org.pedroamorim.projetobootcamp.domain.model.adds.Cidade;
+import org.pedroamorim.projetobootcamp.domain.model.Cidade;
 
 import java.util.List;
 

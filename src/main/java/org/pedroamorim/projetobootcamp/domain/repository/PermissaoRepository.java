@@ -1,6 +1,6 @@
-package org.pedroamorim.projetobootcamp.domain.repository.adds;
+package org.pedroamorim.projetobootcamp.domain.repository;
 
-import org.pedroamorim.projetobootcamp.domain.model.adds.Permissao;
+import org.pedroamorim.projetobootcamp.domain.model.Permissao;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package org.pedroamorim.projetobootcamp.infraestructure.repository.model.adds;
+package org.pedroamorim.projetobootcamp.infraestructure.repository.model;
 
-import org.pedroamorim.projetobootcamp.domain.model.adds.Cidade;
-import org.pedroamorim.projetobootcamp.domain.repository.adds.CidadeRepository;
+import org.pedroamorim.projetobootcamp.domain.model.Cidade;
+import org.pedroamorim.projetobootcamp.domain.repository.CidadeRepository;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
