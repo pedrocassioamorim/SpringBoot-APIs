@@ -2,11 +2,14 @@ package org.pedroamorim.projetobootcamp.infraestructure.repository.adds;
 
 import org.pedroamorim.projetobootcamp.domain.adds.Permissao;
 import org.pedroamorim.projetobootcamp.domain.repository.adds.PermissaoRepository;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+
+@Component
 public class PermissaoRepositoryImpl implements PermissaoRepository {
 
     @PersistenceContext
