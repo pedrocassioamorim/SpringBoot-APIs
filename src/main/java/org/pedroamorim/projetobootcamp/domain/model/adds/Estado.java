@@ -1,10 +1,10 @@
-package org.pedroamorim.projetobootcamp.domain.model;
+package org.pedroamorim.projetobootcamp.domain.model.adds;
 
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Getter
@@ -12,22 +12,13 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-public class Restaurante{
-
+public class Estado {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
 
     private String nome;
-
-    @Column(name = "taxa_frete", nullable = false)
-    private BigDecimal taxaFrete;
-
-    @ManyToOne
-    @JoinColumn(name = "cozinha_id", nullable = false)
-    private Cozinha cozinha;
 
     @Override
     public final boolean equals(Object o) {
@@ -36,8 +27,8 @@ public class Restaurante{
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Restaurante that = (Restaurante) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+        Estado estado = (Estado) o;
+        return getId() != null && Objects.equals(getId(), estado.getId());
     }
 
     @Override

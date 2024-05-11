@@ -1,6 +1,6 @@
 package org.pedroamorim.projetobootcamp.domain.repository.adds;
 
-import org.pedroamorim.projetobootcamp.domain.adds.Estado;
+import org.pedroamorim.projetobootcamp.domain.model.adds.Estado;
 
 import java.util.List;
 
