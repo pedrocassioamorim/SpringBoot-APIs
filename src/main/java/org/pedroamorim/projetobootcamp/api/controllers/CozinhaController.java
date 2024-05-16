@@ -1,10 +1,12 @@
 package org.pedroamorim.projetobootcamp.api.controllers;
 
+import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeEmUsoException;
+import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeNaoEncontradaException;
 import org.pedroamorim.projetobootcamp.domain.model.Cozinha;
 import org.pedroamorim.projetobootcamp.domain.repository.CozinhaRepository;
+import org.pedroamorim.projetobootcamp.domain.service.CadastroCozinhaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,9 @@ public class CozinhaController {
 
     @Autowired
     private CozinhaRepository repository;
+
+    @Autowired
+    private CadastroCozinhaService cadastroCozinha;
 
     @GetMapping
     public List<Cozinha> listar(){
@@ -35,7 +40,7 @@ public class CozinhaController {
 
     @PostMapping @ResponseStatus(HttpStatus.CREATED)
     public Cozinha adicionar(@RequestBody Cozinha cozinha){
-        return repository.salvar(cozinha);
+        return cadastroCozinha.salvar(cozinha);
     }
 
     @PutMapping("/{Id}")
@@ -55,14 +60,13 @@ public class CozinhaController {
     @DeleteMapping("/{Id}")
     public ResponseEntity<Cozinha> remover (@PathVariable Long Id){
         try {
-            Cozinha cozinhaExluir = repository.buscar(Id);
-            if (cozinhaExluir != null) {
-                repository.remover(Id);
-                return ResponseEntity.noContent().build();
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (DataIntegrityViolationException e){
+            cadastroCozinha.excluir(Id);
+            return ResponseEntity.noContent().build();
+
+        }catch (EntidadeNaoEncontradaException e){
+            return ResponseEntity.notFound().build();
+
+        } catch (EntidadeEmUsoException f){
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }

@@ -2,6 +2,7 @@ package org.pedroamorim.projetobootcamp.infraestructure.repository.model;
 
 import org.pedroamorim.projetobootcamp.domain.model.Cozinha;
 import org.pedroamorim.projetobootcamp.domain.repository.CozinhaRepository;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -35,6 +36,9 @@ public class CozinhaRepositoryImpl implements CozinhaRepository {
     @Transactional
     public void remover(Long id) {
         Cozinha cozinha = buscar(id);
+        if (cozinha == null){
+            throw new EmptyResultDataAccessException(1);
+        }
         manager.remove(cozinha);
     }
 }
