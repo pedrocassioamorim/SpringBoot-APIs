@@ -30,7 +30,7 @@ public class CozinhaController {
         try{
             Cozinha cozinha = cozinhaService.buscar(Id);
             return ResponseEntity.ok().body(cozinha);
-        }catch (EntidadeNaoEncontradaException e){
+        } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
         }
     }
@@ -46,7 +46,7 @@ public class CozinhaController {
         try{
             Cozinha cozinhaAtualizar = cozinhaService.atualizar(Id, cozinha);
             return ResponseEntity.ok().body(cozinhaAtualizar);
-        }catch (EntidadeNaoEncontradaException e){
+        } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
         }
     }
@@ -56,13 +56,12 @@ public class CozinhaController {
         try{
             cozinhaService.excluir(Id);
             return ResponseEntity.noContent().build();
-        }catch (EntidadeNaoEncontradaException e){
+        } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
-        }catch (EntidadeEmUsoException f){
+        } catch (EntidadeEmUsoException f){
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
-
 
 
 
