@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -38,7 +39,12 @@ public class RestauranteController {
     @PostMapping
     public ResponseEntity<Restaurante> adicionar (@RequestBody Restaurante restaurante){
         Restaurante restauranteSalvar = restauranteService.salvar(restaurante);
-        return ResponseEntity.created(URI.create("URI_simulate")).body(restauranteSalvar);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{Id}")
+                .buildAndExpand(restaurante.getId())
+                .toUri();
+        return ResponseEntity.created(uri).body(restauranteSalvar);
     }
 
     @PutMapping("/{Id}")

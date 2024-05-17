@@ -4,11 +4,11 @@ import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeEmUsoException;
 import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeNaoEncontradaException;
 import org.pedroamorim.projetobootcamp.domain.model.Cidade;
 import org.pedroamorim.projetobootcamp.domain.service.CadastroCidadeService;
-import org.pedroamorim.projetobootcamp.domain.service.CadastroCozinhaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -39,7 +39,12 @@ public class CidadeController {
     @PostMapping
     public ResponseEntity<Cidade> adicionar (@RequestBody Cidade cidade){
         Cidade cidadeSalvar = cidadeService.salvar(cidade);
-        return ResponseEntity.created(URI.create("URI_simulated")).body(cidadeSalvar);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{Id}")
+                .buildAndExpand(cidade.getId())
+                .toUri();
+        return ResponseEntity.created(uri).body(cidadeSalvar);
     }
 
     @PutMapping("/{Id}")

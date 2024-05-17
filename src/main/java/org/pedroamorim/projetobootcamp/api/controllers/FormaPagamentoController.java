@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -38,7 +39,12 @@ public class FormaPagamentoController {
     @PostMapping
     public ResponseEntity<FormaPagamento> salvar (@RequestBody FormaPagamento formaPagamento){
         FormaPagamento formaPagamentoSalvar = formaPagamentoService.salvar(formaPagamento);
-        return ResponseEntity.created(URI.create("URI_simulated")).body(formaPagamentoSalvar);
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{Id}")
+                .buildAndExpand(formaPagamento.getId())
+                .toUri();
+        return ResponseEntity.created(uri).body(formaPagamentoSalvar);
     }
 
     @PutMapping("/{Id}")
