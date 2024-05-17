@@ -20,6 +20,7 @@ public class Restaurante{
     @EqualsAndHashCode.Include
     private Long id;
 
+    @Column(nullable = false)
     private String nome;
 
     @Column(name = "taxa_frete", nullable = false)

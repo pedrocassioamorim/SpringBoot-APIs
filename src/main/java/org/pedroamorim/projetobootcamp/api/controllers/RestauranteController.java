@@ -2,6 +2,7 @@ package org.pedroamorim.projetobootcamp.api.controllers;
 
 import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeEmUsoException;
 import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeNaoEncontradaException;
+import org.pedroamorim.projetobootcamp.domain.exceptions.RequisicaoRuimException;
 import org.pedroamorim.projetobootcamp.domain.model.Restaurante;
 import org.pedroamorim.projetobootcamp.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,23 +38,30 @@ public class RestauranteController {
     }
 
     @PostMapping
-    public ResponseEntity<Restaurante> adicionar (@RequestBody Restaurante restaurante){
-        Restaurante restauranteSalvar = restauranteService.salvar(restaurante);
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{Id}")
-                .buildAndExpand(restaurante.getId())
-                .toUri();
-        return ResponseEntity.created(uri).body(restauranteSalvar);
+    public ResponseEntity<?> adicionar (@RequestBody Restaurante restaurante){
+        try{
+            restaurante = restauranteService.salvar(restaurante);
+            URI uri = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{Id}")
+                    .buildAndExpand(restaurante.getId())
+                    .toUri();
+            return ResponseEntity.created(uri).body(restaurante);
+        } catch (EntidadeNaoEncontradaException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
     @PutMapping("/{Id}")
-    public ResponseEntity<Restaurante> atualizar(@RequestBody Restaurante restaurante, @PathVariable Long Id){
+    public ResponseEntity<?> atualizar(@RequestBody Restaurante restaurante, @PathVariable Long Id){
         try{
             Restaurante restauranteAtualizar = restauranteService.atualizar(Id, restaurante);
             return ResponseEntity.ok().body(restauranteAtualizar);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
+        } catch (RequisicaoRuimException f){
+            return ResponseEntity.badRequest().body(f.getMessage());
         }
     }
 
