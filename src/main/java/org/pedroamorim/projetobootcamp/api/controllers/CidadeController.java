@@ -2,6 +2,7 @@ package org.pedroamorim.projetobootcamp.api.controllers;
 
 import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeEmUsoException;
 import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeNaoEncontradaException;
+import org.pedroamorim.projetobootcamp.domain.exceptions.RequisicaoRuimException;
 import org.pedroamorim.projetobootcamp.domain.model.Cidade;
 import org.pedroamorim.projetobootcamp.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,23 +38,31 @@ public class CidadeController {
     }
 
     @PostMapping
-    public ResponseEntity<Cidade> adicionar (@RequestBody Cidade cidade){
-        Cidade cidadeSalvar = cidadeService.salvar(cidade);
-        URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{Id}")
-                .buildAndExpand(cidade.getId())
-                .toUri();
-        return ResponseEntity.created(uri).body(cidadeSalvar);
+    public ResponseEntity<?> adicionar (@RequestBody Cidade cidade){
+        try{
+            Cidade cidadeSalvar = cidadeService.salvar(cidade);
+            URI uri = ServletUriComponentsBuilder
+                    .fromCurrentRequest()
+                    .path("/{Id}")
+                    .buildAndExpand(cidade.getId())
+                    .toUri();
+            return ResponseEntity.created(uri).body(cidadeSalvar);
+        } catch (RequisicaoRuimException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+
     }
 
     @PutMapping("/{Id}")
-    public ResponseEntity<Cidade> atualizar (@RequestBody Cidade cidade, @PathVariable Long Id){
+    public ResponseEntity<?> atualizar (@RequestBody Cidade cidade, @PathVariable Long Id){
         try{
             Cidade cidadeAtualizar = cidadeService.atualizar(Id, cidade);
             return ResponseEntity.ok().body(cidadeAtualizar);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
+        } catch (RequisicaoRuimException f){
+            return ResponseEntity.badRequest().body(f.getMessage());
         }
     }
 
