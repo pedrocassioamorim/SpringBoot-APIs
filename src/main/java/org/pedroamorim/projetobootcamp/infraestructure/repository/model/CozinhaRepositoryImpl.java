@@ -28,8 +28,8 @@ public class CozinhaRepositoryImpl implements CozinhaRepository {
 
     @Override
     public List<Cozinha> buscarPorNome(String nome) {
-        return manager.createQuery("from Cozinha where nome = :nome", Cozinha.class)
-                .setParameter("nome", nome)
+        return manager.createQuery("from Cozinha where nome like :nome", Cozinha.class)
+                .setParameter("nome", "%" + nome + "%")
                 .getResultList();
     }
 

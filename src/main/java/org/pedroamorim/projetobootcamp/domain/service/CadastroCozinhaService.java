@@ -30,6 +30,14 @@ public class CadastroCozinhaService {
         return cozinha;
     }
 
+    public List<Cozinha> buscarPorNome(String nome){
+        List<Cozinha> cozinhas = cozinhaRepository.buscarPorNome(nome);
+        if(cozinhas == null){
+            throw new EntidadeNaoEncontradaException("Cozinha não encontrada.");
+        }
+        return cozinhas;
+    }
+
     public Cozinha salvar(Cozinha cozinha){
         return cozinhaRepository.salvar(cozinha);
     }

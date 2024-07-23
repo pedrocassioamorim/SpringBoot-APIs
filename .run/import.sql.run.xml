@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="import.sql" type="DatabaseScript" editBeforeRun="true" singleton="false" nameIsGenerated="true">
+    <script-file value="$PROJECT_DIR$/src/main/resources/import.sql" />
+    <script-mode>FILE</script-mode>
+    <data-source id="c1e6d9e4-43ad-4fad-9b1a-dc37075f3690" namespace="schema/&quot;algafood&quot;" />
+    <method v="2" />
+  </configuration>
+</component>

@@ -1,6 +1,7 @@
 package org.pedroamorim.projetobootcamp.api.controllers;
 
 
+
 import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeEmUsoException;
 import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeNaoEncontradaException;
 import org.pedroamorim.projetobootcamp.domain.model.Cozinha;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+
 @RestController @RequestMapping("/cozinhas")
 public class CozinhaController {
 
@@ -23,6 +25,12 @@ public class CozinhaController {
     @GetMapping
     public ResponseEntity<List<Cozinha>> listar(){
         List<Cozinha> cozinhas = cozinhaService.listar();
+        return ResponseEntity.ok().body(cozinhas);
+    }
+
+    @GetMapping("/por-nome")
+    public ResponseEntity<List<Cozinha>> listarPorNome(@RequestParam("nome") String nome) {
+        List<Cozinha> cozinhas = cozinhaService.buscarPorNome(nome);
         return ResponseEntity.ok().body(cozinhas);
     }
 
@@ -48,7 +56,7 @@ public class CozinhaController {
     }
 
     @PutMapping("/{Id}")
-    public ResponseEntity<Cozinha> atualizar(@PathVariable Long Id, @RequestBody Cozinha cozinha){
+    public ResponseEntity<?> atualizar(@PathVariable("Id") Long Id, @RequestBody Cozinha cozinha){
         try{
             Cozinha cozinhaAtualizar = cozinhaService.atualizar(Id, cozinha);
             return ResponseEntity.ok().body(cozinhaAtualizar);
