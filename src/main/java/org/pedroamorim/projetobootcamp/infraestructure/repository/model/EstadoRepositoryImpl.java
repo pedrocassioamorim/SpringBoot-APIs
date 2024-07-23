@@ -2,13 +2,13 @@ package org.pedroamorim.projetobootcamp.infraestructure.repository.model;
 
 import org.pedroamorim.projetobootcamp.domain.model.Estado;
 import org.pedroamorim.projetobootcamp.domain.repository.EstadoRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Component
+@Repository
 public class EstadoRepositoryImpl implements EstadoRepository {
 
     @PersistenceContext

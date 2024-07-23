@@ -3,14 +3,14 @@ package org.pedroamorim.projetobootcamp.infraestructure.repository.model;
 import org.pedroamorim.projetobootcamp.domain.model.Cozinha;
 import org.pedroamorim.projetobootcamp.domain.repository.CozinhaRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 
-@Component
+@Repository
 public class CozinhaRepositoryImpl implements CozinhaRepository {
 
     @PersistenceContext
@@ -24,6 +24,13 @@ public class CozinhaRepositoryImpl implements CozinhaRepository {
     @Override
     public Cozinha buscar(Long id) {
         return manager.find(Cozinha.class, id);
+    }
+
+    @Override
+    public List<Cozinha> buscarPorNome(String nome) {
+        return manager.createQuery("from Cozinha where nome = :nome", Cozinha.class)
+                .setParameter("nome", nome)
+                .getResultList();
     }
 
     @Override

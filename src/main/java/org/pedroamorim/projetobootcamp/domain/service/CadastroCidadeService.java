@@ -18,8 +18,10 @@ import java.util.List;
 @Service
 public class CadastroCidadeService {
 
+
     @Autowired
     private CidadeRepository cidadeRepository;
+
 
     @Autowired
     private EstadoRepository estadoRepository;
