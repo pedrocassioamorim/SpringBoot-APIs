@@ -2,6 +2,7 @@ package org.pedroamorim.projetobootcamp.services;
 
 import org.pedroamorim.projetobootcamp.domain.model.Cozinha;
 import org.pedroamorim.projetobootcamp.repositories.CozinhaRepository;
+import org.pedroamorim.projetobootcamp.repositories.RestauranteRepository;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
 import org.springframework.beans.BeanUtils;
@@ -23,6 +24,9 @@ public class CadastroCozinhaService {
     @Autowired
     private CozinhaRepository cozinhaRepository;
 
+    @Autowired
+    private RestauranteRepository restauranteRepository;
+
     public List<Cozinha> listar(){
         return cozinhaRepository.findAll();
     }
@@ -35,13 +39,6 @@ public class CadastroCozinhaService {
         return cozinha.get();
     }
 
-    public List<Cozinha> buscarPorNome(String nome){
-        List<Cozinha> cozinhas = cozinhaRepository.findByNomeContaining(nome);
-        if(cozinhas == null){
-            throw new EntidadeNaoEncontradaException(String.format(COZINHA_NAO_ENCONTRADA_NOME + nome));
-        }
-        return cozinhas;
-    }
 
     public Cozinha salvar(Cozinha cozinha){
         return cozinhaRepository.save(cozinha);

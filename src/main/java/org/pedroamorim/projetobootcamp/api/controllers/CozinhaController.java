@@ -26,12 +26,12 @@ public class CozinhaController {
         List<Cozinha> cozinhas = cozinhaService.listar();
         return ResponseEntity.ok().body(cozinhas);
     }
-
-    @GetMapping("/por-nome")
-    public ResponseEntity<List<Cozinha>> listarPorNome(@RequestParam("nome") String nome) {
-        List<Cozinha> cozinhas = cozinhaService.buscarPorNome(nome);
-        return ResponseEntity.ok().body(cozinhas);
-    }
+//
+//    @GetMapping("/por-nome")
+//    public ResponseEntity<List<Cozinha>> listarPorNome(@RequestParam("nome") String nome) {
+//        List<Cozinha> cozinhas = cozinhaService.buscarPorNome(nome);
+//        return ResponseEntity.ok().body(cozinhas);
+//    }
 
     @GetMapping("/{Id}")
     public ResponseEntity<Cozinha> buscar(@PathVariable Long Id){

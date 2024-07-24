@@ -22,6 +22,7 @@ public class CadastroRestauranteService {
     public static final String NAO_FOI_ENCONTRADO_UM_RESTAURANTE_COM_O_ID_D = "Nao foi encontrado um Restaurante com o ID %d";
     public static final String NAO_EXISTE_UMA_COZINHA_PARA_O_ID_D = "Não existe uma cozinha para o ID %d";
     public static final String NAO_PODE_EXCLUIR_RESTAURANTE_DE_CODIGO_D_POIS_ESTA_EM_USO = "Não pode excluir Restaurante de codigo %d pois esta em uso";
+
     @Autowired
     private RestauranteRepository restauranteRepository;
 
