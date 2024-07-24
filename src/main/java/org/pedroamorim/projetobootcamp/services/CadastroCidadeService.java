@@ -24,6 +24,7 @@ public class CadastroCidadeService {
     public static final String NAO_EXISTE_UM_ESTADO_COM_O_ID_D = "Não existe um Estado com o ID %d";
     public static final String CIDADE_DE_ID_D_NAO_PODE_SER_REMOVIDA_POIS_ESTA_SENDO_USADA = "Cidade de ID %d nao pode ser removida pois esta sendo usada";
 
+
     @Autowired
     private CidadeRepository cidadeRepository;
 
