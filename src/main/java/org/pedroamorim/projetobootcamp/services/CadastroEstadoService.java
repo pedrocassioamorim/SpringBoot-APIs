@@ -16,6 +16,9 @@ import java.util.Optional;
 @Service
 public class CadastroEstadoService {
 
+    public static final String ESTADO_DE_ID_D_NAO_ENCONTRADO = "Estado de ID %d nao encontrado";
+    public static final String ESTADO_DE_ID_D_NN_PODE_SER_REMOVIDO_POIS_ESTA_SENDO_USADO = "Estado de ID %d nn pode ser removido pois esta sendo usado";
+
     @Autowired
     private EstadoRepository estadoRepository;
 
@@ -27,7 +30,7 @@ public class CadastroEstadoService {
     public Estado buscar(Long Id){
         Optional<Estado> estado = estadoRepository.findById(Id);
         if(estado.isEmpty()){
-            throw new EntidadeNaoEncontradaException(String.format("Estado de ID %d nao encontrado", Id));
+            throw new EntidadeNaoEncontradaException(String.format(ESTADO_DE_ID_D_NAO_ENCONTRADO, Id));
         }
         return estado.get();
     }
@@ -39,7 +42,7 @@ public class CadastroEstadoService {
     public Estado atualizar(Long Id, Estado estado){
         Optional<Estado> estadoAtualizar = estadoRepository.findById(Id);
         if (estadoAtualizar.isEmpty()) {
-            throw new EntidadeNaoEncontradaException(String.format("Estado de ID %d nao encontrado", Id));
+            throw new EntidadeNaoEncontradaException(String.format(ESTADO_DE_ID_D_NAO_ENCONTRADO, Id));
         } else {
             BeanUtils.copyProperties(estado, estadoAtualizar.get(), "id");
             return estadoRepository.save(estado);
@@ -53,9 +56,9 @@ public class CadastroEstadoService {
                 estadoRepository.delete(estadoAtualizar.get());
             }
         } catch (EmptyResultDataAccessException e){
-            throw new EntidadeNaoEncontradaException(String.format("Estado de ID %d nao encontrado", Id));
+            throw new EntidadeNaoEncontradaException(String.format(ESTADO_DE_ID_D_NAO_ENCONTRADO, Id));
         } catch (DataIntegrityViolationException f){
-            throw new EntidadeEmUsoException(String.format("Estado de ID %d nn pode ser removido pois esta sendo usado"));
+            throw new EntidadeEmUsoException(String.format(ESTADO_DE_ID_D_NN_PODE_SER_REMOVIDO_POIS_ESTA_SENDO_USADO, Id));
         }
     }
 

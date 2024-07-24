@@ -19,6 +19,9 @@ import java.util.Optional;
 @Service
 public class CadastroRestauranteService {
 
+    public static final String NAO_FOI_ENCONTRADO_UM_RESTAURANTE_COM_O_ID_D = "Nao foi encontrado um Restaurante com o ID %d";
+    public static final String NAO_EXISTE_UMA_COZINHA_PARA_O_ID_D = "Não existe uma cozinha para o ID %d";
+    public static final String NAO_PODE_EXCLUIR_RESTAURANTE_DE_CODIGO_D_POIS_ESTA_EM_USO = "Não pode excluir Restaurante de codigo %d pois esta em uso";
     @Autowired
     private RestauranteRepository restauranteRepository;
 
@@ -33,7 +36,7 @@ public class CadastroRestauranteService {
     public Restaurante buscar(Long Id){
         Optional<Restaurante> restaurante = restauranteRepository.findById(Id);
         if (restaurante.isEmpty()){
-            throw new EntidadeNaoEncontradaException(String.format("Nao foi encontrado um Restaurante com o ID %d", Id));
+            throw new EntidadeNaoEncontradaException(String.format(NAO_FOI_ENCONTRADO_UM_RESTAURANTE_COM_O_ID_D, Id));
         }
         return restaurante.get();
     }
@@ -42,7 +45,7 @@ public class CadastroRestauranteService {
         Long cozinhaId = restaurante.getCozinha().getId();
         Optional<Cozinha> cozinha = cozinhaRepository.findById(cozinhaId);
         if (cozinha.isEmpty()){
-            throw new RequisicaoRuimException(String.format("Não existe uma cozinha para o ID %d", cozinhaId));
+            throw new RequisicaoRuimException(String.format(NAO_EXISTE_UMA_COZINHA_PARA_O_ID_D, cozinhaId));
         }
         restaurante.setCozinha(cozinha.get());
         return restauranteRepository.save(restaurante);
@@ -51,7 +54,7 @@ public class CadastroRestauranteService {
     public Restaurante atualizar(Long Id, Restaurante restaurante){
         Optional<Restaurante> restauranteAtualizar = restauranteRepository.findById(Id);
         if (restauranteAtualizar.isEmpty()){
-            throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado um Restaurante com o ID %d", Id));
+            throw new EntidadeNaoEncontradaException(String.format(NAO_FOI_ENCONTRADO_UM_RESTAURANTE_COM_O_ID_D, Id));
         } else {
             BeanUtils.copyProperties(restaurante, restauranteAtualizar.get(), "id");
             return salvar(restaurante);
@@ -62,9 +65,9 @@ public class CadastroRestauranteService {
         try{
             restauranteRepository.deleteById(Id);
         }catch (EmptyResultDataAccessException e){
-            throw new EntidadeNaoEncontradaException(String.format("Não foi encontrado um Restaurante com o ID %d", Id));
+            throw new EntidadeNaoEncontradaException(String.format(NAO_FOI_ENCONTRADO_UM_RESTAURANTE_COM_O_ID_D, Id));
         }catch (DataIntegrityViolationException f){
-            throw new EntidadeEmUsoException(String.format("Não pode excluir Restaurante de codigo %d pois esta em uso"));
+            throw new EntidadeEmUsoException(String.format(NAO_PODE_EXCLUIR_RESTAURANTE_DE_CODIGO_D_POIS_ESTA_EM_USO, Id));
         }
     }
 

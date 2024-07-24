@@ -16,6 +16,9 @@ import java.util.Optional;
 @Service
 public class CadastroPermissaoService {
 
+    public static final String PERMISSAO_DE_ID_D_NAO_ENCONTRADA = "Permissao de ID %d nao encontrada";
+    public static final String PERMISSAO_DE_ID_D_NAO_PODE_SER_REMOVIDA_POIS_ESTA_SENDO_USADA = "Permissao de ID %d nao pode ser removida pois esta sendo usada";
+
     @Autowired
     private PermissaoRepository permissaoRepository;
 
@@ -28,7 +31,7 @@ public class CadastroPermissaoService {
     public Permissao buscar (Long Id){
         Optional<Permissao> permissao = permissaoRepository.findById(Id);
         if (permissao.isEmpty()){
-            throw new EntidadeNaoEncontradaException(String.format("Permissao de ID %d nao encontrada", Id));
+            throw new EntidadeNaoEncontradaException(String.format(PERMISSAO_DE_ID_D_NAO_ENCONTRADA, Id));
         }
         return permissao.get();
     }
@@ -40,7 +43,7 @@ public class CadastroPermissaoService {
     public Permissao atualizar (Permissao permissao, Long Id){
         Optional<Permissao> permissaoAtualizar = permissaoRepository.findById(Id);
         if (permissaoAtualizar.isEmpty()){
-            throw new EntidadeNaoEncontradaException(String.format("Permissao de ID %d nao encontrada", Id));
+            throw new EntidadeNaoEncontradaException(String.format(PERMISSAO_DE_ID_D_NAO_ENCONTRADA, Id));
         } else {
             BeanUtils.copyProperties(permissao, permissaoAtualizar.get(), "id");
             return permissaoRepository.save(permissao);
@@ -51,9 +54,9 @@ public class CadastroPermissaoService {
         try{
             permissaoRepository.deleteById(Id);
         } catch (EmptyResultDataAccessException e){
-            throw new EntidadeNaoEncontradaException(String.format("Permissao de ID %d nao encontrada", Id));
+            throw new EntidadeNaoEncontradaException(String.format(PERMISSAO_DE_ID_D_NAO_ENCONTRADA, Id));
         } catch (DataIntegrityViolationException f){
-            throw new EntidadeEmUsoException(String.format("Permissao de ID %d nao pode ser removida pois esta sendo usada", Id));
+            throw new EntidadeEmUsoException(String.format(PERMISSAO_DE_ID_D_NAO_PODE_SER_REMOVIDA_POIS_ESTA_SENDO_USADA, Id));
         }
     }
 
