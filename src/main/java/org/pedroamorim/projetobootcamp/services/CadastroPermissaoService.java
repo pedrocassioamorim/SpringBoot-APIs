@@ -1,9 +1,9 @@
-package org.pedroamorim.projetobootcamp.domain.service;
+package org.pedroamorim.projetobootcamp.services;
 
-import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeEmUsoException;
-import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeNaoEncontradaException;
 import org.pedroamorim.projetobootcamp.domain.model.Permissao;
-import org.pedroamorim.projetobootcamp.domain.repository.PermissaoRepository;
+import org.pedroamorim.projetobootcamp.repositories.PermissaoRepository;
+import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
+import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -11,6 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CadastroPermissaoService {
@@ -20,34 +21,35 @@ public class CadastroPermissaoService {
 
 
     public List<Permissao> listar(){
-        return permissaoRepository.listar();
+        return permissaoRepository.findAll();
     }
 
+
     public Permissao buscar (Long Id){
-        Permissao permissao = permissaoRepository.buscar(Id);
-        if (permissao == null){
+        Optional<Permissao> permissao = permissaoRepository.findById(Id);
+        if (permissao.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format("Permissao de ID %d nao encontrada", Id));
         }
-        return permissao;
+        return permissao.get();
     }
 
     public Permissao salvar (Permissao permissao){
-        return permissaoRepository.salvar(permissao);
+        return permissaoRepository.save(permissao);
     }
 
     public Permissao atualizar (Permissao permissao, Long Id){
-        Permissao permissaoAtualizar = permissaoRepository.buscar(Id);
-        if (permissaoAtualizar == null){
+        Optional<Permissao> permissaoAtualizar = permissaoRepository.findById(Id);
+        if (permissaoAtualizar.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format("Permissao de ID %d nao encontrada", Id));
         } else {
-            BeanUtils.copyProperties(permissao, permissaoAtualizar, "id");
-            return permissaoRepository.salvar(permissaoAtualizar);
+            BeanUtils.copyProperties(permissao, permissaoAtualizar.get(), "id");
+            return permissaoRepository.save(permissao);
         }
     }
 
     public void excluir (Long Id){
         try{
-            permissaoRepository.remover(Id);
+            permissaoRepository.deleteById(Id);
         } catch (EmptyResultDataAccessException e){
             throw new EntidadeNaoEncontradaException(String.format("Permissao de ID %d nao encontrada", Id));
         } catch (DataIntegrityViolationException f){

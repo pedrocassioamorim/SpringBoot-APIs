@@ -1,4 +1,4 @@
-package org.pedroamorim.projetobootcamp.domain.exceptions;
+package org.pedroamorim.projetobootcamp.services.exceptions;
 
 public class EntidadeNaoEncontradaException extends RuntimeException{
 

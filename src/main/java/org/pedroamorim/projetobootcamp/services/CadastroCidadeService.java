@@ -1,12 +1,12 @@
-package org.pedroamorim.projetobootcamp.domain.service;
+package org.pedroamorim.projetobootcamp.services;
 
-import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeEmUsoException;
-import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeNaoEncontradaException;
-import org.pedroamorim.projetobootcamp.domain.exceptions.RequisicaoRuimException;
 import org.pedroamorim.projetobootcamp.domain.model.Cidade;
 import org.pedroamorim.projetobootcamp.domain.model.Estado;
-import org.pedroamorim.projetobootcamp.domain.repository.CidadeRepository;
-import org.pedroamorim.projetobootcamp.domain.repository.EstadoRepository;
+import org.pedroamorim.projetobootcamp.repositories.CidadeRepository;
+import org.pedroamorim.projetobootcamp.repositories.EstadoRepository;
+import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
+import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
+import org.pedroamorim.projetobootcamp.services.exceptions.RequisicaoRuimException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,6 +14,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CadastroCidadeService {
@@ -28,40 +29,44 @@ public class CadastroCidadeService {
 
 
     public List<Cidade> listar(){
-        return cidadeRepository.listar();
-    }
+        return cidadeRepository.findAll();}
 
-    public Cidade buscar(Long Id){
-        Cidade cidade = cidadeRepository.buscar(Id);
-        if (cidade == null){
+    public Cidade buscar (Long Id){
+
+        Optional<Cidade> cidade = cidadeRepository.findById(Id);
+
+        if (!cidade.isPresent()){
             throw new EntidadeNaoEncontradaException(String.format("Cidade de ID %d nao encontrada", Id));
         }
-        return cidade;
+        return cidade.get();
     }
 
     public Cidade salvar(Cidade cidade){
         Long estadoId = cidade.getEstado().getId();
-        Estado estado = estadoRepository.buscar(estadoId);
-        if (estado == null){
+        Optional<Estado> estado = estadoRepository.findById(estadoId);
+        if (!estado.isPresent()){
             throw new RequisicaoRuimException(String.format("Não existe um Estado com o ID %d", estadoId));
         }
-        cidade.setEstado(estado);
-        return cidadeRepository.salvar(cidade);
+        cidade.setEstado(estado.get());
+        return cidadeRepository.save(cidade);
     }
 
     public Cidade atualizar (Long Id, Cidade cidade){
-        Cidade cidadeAtualizar = cidadeRepository.buscar(Id);
-        if (cidadeAtualizar == null){
+        Optional<Cidade> cidadeAtualizar = cidadeRepository.findById(Id);
+        if (cidadeAtualizar.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format("Cidade de ID %d nao encontrada", Id));
         } else {
-            BeanUtils.copyProperties(cidade, cidadeAtualizar, "id");
-            return salvar(cidadeAtualizar);
+            BeanUtils.copyProperties(cidade, cidadeAtualizar.get(), "id");
+            return salvar(cidade);
         }
     }
 
     public void excluir (Long Id){
         try{
-            cidadeRepository.remover(Id);
+            Optional<Cidade> cidadeAtualizar = cidadeRepository.findById(Id);
+            if (cidadeAtualizar.isPresent()){
+                cidadeRepository.delete(cidadeAtualizar.get());
+            }
         } catch (EmptyResultDataAccessException e){
             throw new EntidadeNaoEncontradaException(String.format("Cidade de ID %d nao encontrada", Id));
         } catch (DataIntegrityViolationException f){

@@ -1,9 +1,9 @@
-package org.pedroamorim.projetobootcamp.domain.service;
+package org.pedroamorim.projetobootcamp.services;
 
-import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeEmUsoException;
-import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeNaoEncontradaException;
 import org.pedroamorim.projetobootcamp.domain.model.Estado;
-import org.pedroamorim.projetobootcamp.domain.repository.EstadoRepository;
+import org.pedroamorim.projetobootcamp.repositories.EstadoRepository;
+import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
+import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -11,6 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CadastroEstadoService {
@@ -19,34 +20,38 @@ public class CadastroEstadoService {
     private EstadoRepository estadoRepository;
 
     public List<Estado> listar(){
-        return estadoRepository.listar();
+        return estadoRepository.findAll();
     }
 
+
     public Estado buscar(Long Id){
-        Estado estado = estadoRepository.buscar(Id);
-        if(estado == null){
+        Optional<Estado> estado = estadoRepository.findById(Id);
+        if(estado.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format("Estado de ID %d nao encontrado", Id));
         }
-        return estado;
+        return estado.get();
     }
 
     public Estado salvar(Estado estado){
-        return estadoRepository.salvar(estado);
+        return estadoRepository.save(estado);
     }
 
     public Estado atualizar(Long Id, Estado estado){
-        Estado estadoAtualizar = estadoRepository.buscar(Id);
-        if (estadoAtualizar == null) {
+        Optional<Estado> estadoAtualizar = estadoRepository.findById(Id);
+        if (estadoAtualizar.isEmpty()) {
             throw new EntidadeNaoEncontradaException(String.format("Estado de ID %d nao encontrado", Id));
         } else {
-            BeanUtils.copyProperties(estado, estadoAtualizar, "id");
-            return estadoRepository.salvar(estadoAtualizar);
+            BeanUtils.copyProperties(estado, estadoAtualizar.get(), "id");
+            return estadoRepository.save(estado);
         }
     }
 
     public void excluir (Long Id){
         try{
-            estadoRepository.remover(Id);
+            Optional<Estado> estadoAtualizar = estadoRepository.findById(Id);
+            if(estadoAtualizar.isPresent()){
+                estadoRepository.delete(estadoAtualizar.get());
+            }
         } catch (EmptyResultDataAccessException e){
             throw new EntidadeNaoEncontradaException(String.format("Estado de ID %d nao encontrado", Id));
         } catch (DataIntegrityViolationException f){

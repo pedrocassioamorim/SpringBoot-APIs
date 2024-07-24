@@ -1,10 +1,10 @@
-package org.pedroamorim.projetobootcamp.domain.service;
+package org.pedroamorim.projetobootcamp.services;
 
 
-import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeEmUsoException;
-import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeNaoEncontradaException;
 import org.pedroamorim.projetobootcamp.domain.model.FormaPagamento;
-import org.pedroamorim.projetobootcamp.domain.repository.FormaPagamentoRepository;
+import org.pedroamorim.projetobootcamp.repositories.FormaPagamentoRepository;
+import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
+import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CadastroFormaPagamentoService {
@@ -21,34 +22,34 @@ public class CadastroFormaPagamentoService {
 
 
     public List<FormaPagamento> listar(){
-        return formaPagamentoRepository.listar();
+        return formaPagamentoRepository.findAll();
     }
 
     public FormaPagamento buscar(Long Id){
-        FormaPagamento formaPagamento = formaPagamentoRepository.buscar(Id);
-        if (formaPagamento == null){
+        Optional<FormaPagamento> formaPagamento = formaPagamentoRepository.findById(Id);
+        if (formaPagamento.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format("Forma de Pagamento de ID %d nao encontrada", Id));
         }
-        return formaPagamento;
+        return formaPagamento.get();
     }
 
     public FormaPagamento salvar(FormaPagamento formaPagamento){
-        return formaPagamentoRepository.salvar(formaPagamento);
+        return formaPagamentoRepository.save(formaPagamento);
     }
 
     public FormaPagamento atualizar(Long Id, FormaPagamento formaPagamento){
-        FormaPagamento formaPagamentoAtualizar = formaPagamentoRepository.buscar(Id);
-        if (formaPagamentoAtualizar == null) {
+        Optional<FormaPagamento> formaPagamentoAtualizar = formaPagamentoRepository.findById(Id);
+        if (formaPagamentoAtualizar.isEmpty()) {
             throw new EntidadeNaoEncontradaException(String.format("Forma de Pagamento de ID %d nao encontrada", Id));
         } else {
-            BeanUtils.copyProperties(formaPagamento, formaPagamentoAtualizar, "id");
-            return formaPagamentoRepository.salvar(formaPagamentoAtualizar);
+            BeanUtils.copyProperties(formaPagamento, formaPagamentoAtualizar.get(), "id");
+            return formaPagamentoRepository.save(formaPagamento);
         }
     }
 
     public void excluir (Long Id){
         try{
-            formaPagamentoRepository.deletar(Id);
+            formaPagamentoRepository.deleteById(Id);
         } catch (EmptyResultDataAccessException e){
             throw new EntidadeNaoEncontradaException(String.format("Forma de Pagamento de ID %d nao encontrada", Id));
         } catch (DataIntegrityViolationException f){
