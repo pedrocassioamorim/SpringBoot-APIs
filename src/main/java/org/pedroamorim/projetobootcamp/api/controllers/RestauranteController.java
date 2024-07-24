@@ -1,10 +1,10 @@
 package org.pedroamorim.projetobootcamp.api.controllers;
 
-import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeEmUsoException;
-import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeNaoEncontradaException;
-import org.pedroamorim.projetobootcamp.domain.exceptions.RequisicaoRuimException;
 import org.pedroamorim.projetobootcamp.domain.model.Restaurante;
-import org.pedroamorim.projetobootcamp.domain.service.CadastroRestauranteService;
+import org.pedroamorim.projetobootcamp.services.CadastroRestauranteService;
+import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
+import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
+import org.pedroamorim.projetobootcamp.services.exceptions.RequisicaoRuimException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

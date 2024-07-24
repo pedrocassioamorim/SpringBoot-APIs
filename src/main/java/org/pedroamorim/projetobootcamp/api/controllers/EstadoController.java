@@ -1,9 +1,9 @@
 package org.pedroamorim.projetobootcamp.api.controllers;
 
-import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeEmUsoException;
-import org.pedroamorim.projetobootcamp.domain.exceptions.EntidadeNaoEncontradaException;
 import org.pedroamorim.projetobootcamp.domain.model.Estado;
-import org.pedroamorim.projetobootcamp.domain.service.CadastroEstadoService;
+import org.pedroamorim.projetobootcamp.services.CadastroEstadoService;
+import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
+import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
