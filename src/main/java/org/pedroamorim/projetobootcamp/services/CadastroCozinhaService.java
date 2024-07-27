@@ -1,5 +1,7 @@
 package org.pedroamorim.projetobootcamp.services;
 
+import org.modelmapper.ModelMapper;
+import org.pedroamorim.projetobootcamp.domain.dtos.CozinhaDto;
 import org.pedroamorim.projetobootcamp.domain.model.Cozinha;
 import org.pedroamorim.projetobootcamp.repositories.CozinhaRepository;
 import org.pedroamorim.projetobootcamp.repositories.RestauranteRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CadastroCozinhaService {
@@ -27,52 +30,65 @@ public class CadastroCozinhaService {
     @Autowired
     private RestauranteRepository restauranteRepository;
 
-    public List<Cozinha> listar(){
-        return cozinhaRepository.findAll();
+    public List<CozinhaDto> listar(){
+        ModelMapper modelMapper = new ModelMapper();
+        List<Cozinha> cozinhas = cozinhaRepository.findAll();
+        return cozinhas.stream().map(cozinha -> modelMapper.map(cozinha, CozinhaDto.class)).collect(Collectors.toList());
     }
 
-    public List<Cozinha> listarPorNome(String nome){
-        return cozinhaRepository.findTodasByNomeContaining(nome);
+    public List<CozinhaDto> listarPorNome(String nome){
+        ModelMapper modelMapper = new ModelMapper();
+        List<Cozinha> cozinhas = cozinhaRepository.findTodasByNomeContaining(nome);
+        return cozinhas.stream().map(cozinha -> modelMapper.map(cozinha, CozinhaDto.class)).collect(Collectors.toList());
     }
 
-    public Optional<Cozinha> findUnicoByNome(String nome){
-        return cozinhaRepository.findUniqueByNome(nome);
+    public CozinhaDto findUnicoByNome(String nome){
+        ModelMapper modelMapper = new ModelMapper();
+        Optional<Cozinha> cozinha = cozinhaRepository.findUniqueByNome(nome);
+        if(cozinha.isEmpty()){
+            throw new EntidadeNaoEncontradaException(String.format(COZINHA_NAO_ENCONTRADA_NOME));
+        }
+        return modelMapper.map(cozinha.get(), CozinhaDto.class);
     }
 
     public boolean existsByName(String nome){
         return cozinhaRepository.existsByNome(nome);
     }
 
-    public Cozinha findById(Long Id){
+    public CozinhaDto findById(Long Id){
+        ModelMapper modelMapper = new ModelMapper();
         Optional<Cozinha> cozinha = cozinhaRepository.findById(Id);
         if(cozinha.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format(COZINHA_COM_O_ID_D_NAO_FOI_ENCONTRADA));
         }
-        return cozinha.get();
+        return modelMapper.map(cozinha.get(), CozinhaDto.class);
     }
 
 
-    public Cozinha salvar(Cozinha cozinha){
-        return cozinhaRepository.save(cozinha);
+    public CozinhaDto salvar(CozinhaDto cozinhaDto){
+        ModelMapper modelMapper = new ModelMapper();
+        Cozinha cozinha = modelMapper.map(cozinhaDto, Cozinha.class);
+        cozinhaRepository.save(cozinha);
+        return modelMapper.map(cozinha, CozinhaDto.class);
     }
 
-    public Cozinha atualizar(Long Id, Cozinha cozinha){
+    public CozinhaDto atualizar(Long Id, CozinhaDto cozinhaDto){
+        ModelMapper modelMapper = new ModelMapper();
         Optional<Cozinha> cozinhaAtualizar = cozinhaRepository.findById(Id);
-
         if(cozinhaAtualizar.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format(COZINHA_COM_O_ID_D_NAO_FOI_ENCONTRADA, Id));
-        } else{
-            BeanUtils.copyProperties(cozinha, cozinhaAtualizar.get(), "id");
-            return cozinhaRepository.save(cozinha);
         }
+        Cozinha cozinha = cozinhaAtualizar.get();
+        BeanUtils.copyProperties(cozinhaDto, cozinha, "id");
+        cozinhaRepository.save(cozinha);
+        return modelMapper.map(cozinha, CozinhaDto.class);
+
     }
 
     public void excluir (Long id){
         try {
             Optional<Cozinha> cozinha = cozinhaRepository.findById(id);
-            if(cozinha.isPresent()){
-                cozinhaRepository.delete(cozinha.get());
-            }
+            cozinha.ifPresent(value -> cozinhaRepository.delete(value));
         } catch (EmptyResultDataAccessException f) {
             throw new EntidadeNaoEncontradaException(String.format(COZINHA_COM_O_ID_D_NAO_FOI_ENCONTRADA, id));
         } catch (DataIntegrityViolationException e) {
