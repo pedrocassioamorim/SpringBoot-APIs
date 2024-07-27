@@ -31,6 +31,14 @@ public class CadastroCozinhaService {
         return cozinhaRepository.findAll();
     }
 
+    public List<Cozinha> listarPorNome(String nome){
+        return cozinhaRepository.findByNome(nome);
+    }
+
+    public Optional<Cozinha> findUnicoByNome(String nome){
+        return cozinhaRepository.findUnicoByNome(nome);
+    }
+
     public Cozinha buscar(Long Id){
         Optional<Cozinha> cozinha = cozinhaRepository.findById(Id);
         if(cozinha.isEmpty()){

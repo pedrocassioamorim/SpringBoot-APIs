@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController @RequestMapping("/cozinhas")
@@ -26,12 +27,13 @@ public class CozinhaController {
         List<Cozinha> cozinhas = cozinhaService.listar();
         return ResponseEntity.ok().body(cozinhas);
     }
-//
-//    @GetMapping("/por-nome")
-//    public ResponseEntity<List<Cozinha>> listarPorNome(@RequestParam("nome") String nome) {
-//        List<Cozinha> cozinhas = cozinhaService.buscarPorNome(nome);
-//        return ResponseEntity.ok().body(cozinhas);
-//    }
+
+    @GetMapping("cozinhas/unico-por-nome")
+    public ResponseEntity<Optional<Cozinha>> findUnicoByName(@RequestParam String nome){
+        Optional<Cozinha> cozinha = cozinhaService.findUnicoByNome(nome);
+        return ResponseEntity.ok().body(cozinha);
+    }
+
 
     @GetMapping("/{Id}")
     public ResponseEntity<Cozinha> buscar(@PathVariable Long Id){
@@ -41,6 +43,12 @@ public class CozinhaController {
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/cozinhas/por-nome")
+    public ResponseEntity<List<Cozinha>> buscarPorNome(@RequestParam String nome){
+        List<Cozinha> cozinhas = cozinhaService.listarPorNome(nome);
+        return ResponseEntity.ok().body(cozinhas);
     }
 
     @PostMapping
