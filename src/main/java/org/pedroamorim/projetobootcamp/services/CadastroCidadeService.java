@@ -1,5 +1,7 @@
 package org.pedroamorim.projetobootcamp.services;
 
+import org.modelmapper.ModelMapper;
+import org.pedroamorim.projetobootcamp.domain.dtos.CidadeDto;
 import org.pedroamorim.projetobootcamp.domain.model.Cidade;
 import org.pedroamorim.projetobootcamp.domain.model.Estado;
 import org.pedroamorim.projetobootcamp.repositories.CidadeRepository;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CadastroCidadeService {
@@ -33,45 +36,50 @@ public class CadastroCidadeService {
     private EstadoRepository estadoRepository;
 
 
-    public List<Cidade> listar(){
-        return cidadeRepository.findAll();}
+    public List<CidadeDto> listar(){
+        ModelMapper modelMapper = new ModelMapper();
+        List<Cidade> cidades = cidadeRepository.findAll();
+        return cidades.stream()
+                .map(cidade -> modelMapper.map(cidade, CidadeDto.class))
+                .collect(Collectors.toList());
+    }
 
-    public Cidade buscar (Long Id){
-
+    public CidadeDto buscar (Long Id){
+        ModelMapper modelMapper = new ModelMapper();
         Optional<Cidade> cidade = cidadeRepository.findById(Id);
-
-        if (!cidade.isPresent()){
+        if (cidade.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format(CIDADE_DE_ID_D_NAO_ENCONTRADA, Id));
         }
-        return cidade.get();
+        return modelMapper.map(cidade.get(), CidadeDto.class);
     }
 
-    public Cidade salvar(Cidade cidade){
-        Long estadoId = cidade.getEstado().getId();
+    public CidadeDto salvar(CidadeDto cidadeDto){
+        ModelMapper modelMapper = new ModelMapper();
+        Long estadoId = cidadeDto.getEstado().getId();
         Optional<Estado> estado = estadoRepository.findById(estadoId);
-        if (!estado.isPresent()){
-            throw new RequisicaoRuimException(String.format(NAO_EXISTE_UM_ESTADO_COM_O_ID_D, estadoId));
+        if (estado.isEmpty()){
+            throw new EntidadeNaoEncontradaException(String.format(NAO_EXISTE_UM_ESTADO_COM_O_ID_D, estadoId));
         }
-        cidade.setEstado(estado.get());
-        return cidadeRepository.save(cidade);
+        Cidade cidade = cidadeRepository.save(modelMapper.map(cidadeDto, Cidade.class));
+        return modelMapper.map(cidade, CidadeDto.class);
     }
 
-    public Cidade atualizar (Long Id, Cidade cidade){
+    public CidadeDto atualizar (Long Id, CidadeDto cidadeDto){
+        ModelMapper modelMapper = new ModelMapper();
         Optional<Cidade> cidadeAtualizar = cidadeRepository.findById(Id);
         if (cidadeAtualizar.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format(CIDADE_DE_ID_D_NAO_ENCONTRADA, Id));
-        } else {
-            BeanUtils.copyProperties(cidade, cidadeAtualizar.get(), "id");
-            return salvar(cidade);
         }
+        Cidade cidade = cidadeAtualizar.get();
+        BeanUtils.copyProperties(cidadeDto, cidade, "id");
+        cidadeRepository.save(cidade);
+        return modelMapper.map(cidade, CidadeDto.class);
     }
 
     public void excluir (Long Id){
         try{
             Optional<Cidade> cidadeAtualizar = cidadeRepository.findById(Id);
-            if (cidadeAtualizar.isPresent()){
-                cidadeRepository.delete(cidadeAtualizar.get());
-            }
+            cidadeAtualizar.ifPresent(cidade -> cidadeRepository.delete(cidade));
         } catch (EmptyResultDataAccessException e){
             throw new EntidadeNaoEncontradaException(String.format(CIDADE_DE_ID_D_NAO_ENCONTRADA, Id));
         } catch (DataIntegrityViolationException f){
