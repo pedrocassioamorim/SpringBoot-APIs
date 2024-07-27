@@ -11,8 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController @RequestMapping("/restaurantes")
 public class RestauranteController {
@@ -35,6 +37,36 @@ public class RestauranteController {
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("restaurantes/por-taxa-frete")
+    public ResponseEntity<List<Restaurante>> listarPorTaxaFrete(@RequestParam BigDecimal taxaInitial, @RequestParam BigDecimal taxaFinal){
+        List<Restaurante> restaurantes = restauranteService.findByTaxaFreteBetween(taxaInitial, taxaFinal);
+        return ResponseEntity.ok().body(restaurantes);
+    }
+
+    @GetMapping("restaurantes/por-nome-e-id")
+    public ResponseEntity<List<Restaurante>> listarPorNomeEId(@RequestParam String nome, @RequestParam Long id){
+        List<Restaurante> restaurantes = restauranteService.findByNomeContainingAndCozinhaId(nome, id);
+        return ResponseEntity.ok().body(restaurantes);
+    }
+
+    @GetMapping("restaurantes/primeiro-por-nome")
+    public ResponseEntity<Optional<Restaurante>> retornaPrimeiroPorNome(@RequestParam String nome){
+        Optional<Restaurante> restaurante = restauranteService.findFirstRestauranteByNomeContaing(nome);
+        return ResponseEntity.ok().body(restaurante);
+    }
+
+    @GetMapping("restaurantes/top-2-por-nome")
+    public ResponseEntity<List<Restaurante>> retornaTop2ByNome(@RequestParam String nome){
+        List<Restaurante> restaurantes = restauranteService.findTop2ByNomeContaing(nome);
+        return ResponseEntity.ok().body(restaurantes);
+    }
+
+    @GetMapping("restaurantes/por-cozinha")
+    public ResponseEntity<Integer> retornaNumeroDeRestaurantesPorCozinha(@RequestParam Long id){
+        Integer restaurantes = restauranteService.countRestaurantesByCozinhaId(id);
+        return ResponseEntity.ok().body(restaurantes);
     }
 
     @PostMapping

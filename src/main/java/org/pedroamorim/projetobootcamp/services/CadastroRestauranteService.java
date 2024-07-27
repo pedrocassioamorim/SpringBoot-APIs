@@ -13,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +41,31 @@ public class CadastroRestauranteService {
             throw new EntidadeNaoEncontradaException(String.format(NAO_FOI_ENCONTRADO_UM_RESTAURANTE_COM_O_ID_D, Id));
         }
         return restaurante.get();
+    }
+
+    public List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal) {
+        List<Restaurante> restaurantes = restauranteRepository.findByTaxaFreteBetween(taxaInicial, taxaFinal);
+        return restaurantes;
+    }
+
+    public List<Restaurante> findByNomeContainingAndCozinhaId(String nome, Long cozinhaId) {
+        List<Restaurante> restaurantes = restauranteRepository.findByNomeContainingAndCozinhaId(nome, cozinhaId);
+        return restaurantes;
+    }
+
+    public Optional<Restaurante> findFirstRestauranteByNomeContaing(String nome) {
+        Optional<Restaurante> restaurante = restauranteRepository.findFirstRestauranteByNomeContaining(nome);
+        return restaurante;
+    }
+
+    public List<Restaurante> findTop2ByNomeContaing(String nome) {
+        List<Restaurante> restaurantes = restauranteRepository.findTop2ByNomeContaining(nome);
+        return restaurantes;
+    }
+
+    public Integer countRestaurantesByCozinhaId(Long cozinhaId) {
+        Integer count = restauranteRepository.countByCozinhaId(cozinhaId);
+        return count;
     }
 
     public Restaurante salvar(Restaurante restaurante){
