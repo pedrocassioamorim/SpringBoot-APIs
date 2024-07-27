@@ -32,14 +32,18 @@ public class CadastroCozinhaService {
     }
 
     public List<Cozinha> listarPorNome(String nome){
-        return cozinhaRepository.findByNome(nome);
+        return cozinhaRepository.findTodasByNomeContaining(nome);
     }
 
     public Optional<Cozinha> findUnicoByNome(String nome){
-        return cozinhaRepository.findUnicoByNome(nome);
+        return cozinhaRepository.findUniqueByNome(nome);
     }
 
-    public Cozinha buscar(Long Id){
+    public boolean existsByName(String nome){
+        return cozinhaRepository.existsByNome(nome);
+    }
+
+    public Cozinha findById(Long Id){
         Optional<Cozinha> cozinha = cozinhaRepository.findById(Id);
         if(cozinha.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format(COZINHA_COM_O_ID_D_NAO_FOI_ENCONTRADA));

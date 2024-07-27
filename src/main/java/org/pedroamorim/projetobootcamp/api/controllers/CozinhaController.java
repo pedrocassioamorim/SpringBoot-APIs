@@ -35,10 +35,16 @@ public class CozinhaController {
     }
 
 
+    @GetMapping("cozinhas/existe")
+    public ResponseEntity<Boolean> existeCozinha(@RequestParam String nome){
+        Boolean exists = cozinhaService.existsByName(nome);
+        return ResponseEntity.ok().body(exists);
+    }
+
     @GetMapping("/{Id}")
     public ResponseEntity<Cozinha> buscar(@PathVariable Long Id){
         try{
-            Cozinha cozinha = cozinhaService.buscar(Id);
+            Cozinha cozinha = cozinhaService.findById(Id);
             return ResponseEntity.ok().body(cozinha);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
