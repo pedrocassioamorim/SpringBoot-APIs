@@ -26,6 +26,8 @@ public class PermissaoController {
         return ResponseEntity.ok().body(permissoes);
     }
 
+    // O Renato é foda!!
+
     @GetMapping("/{Id}")
     public ResponseEntity<PermissaoDto> buscar (@PathVariable Long Id){
         try{
