@@ -23,6 +23,7 @@ public class CadastroCozinhaService {
     public static final String COZINHA_COM_O_ID_D_NAO_FOI_ENCONTRADA = "Cozinha com o ID %d nao foi encontrada.";
     public static final String COZINHA_NAO_ENCONTRADA_NOME = "Cozinha não encontrada pelo nome: ";
     public static final String COZINHA_DE_CODIGO_D_NN_PODE_SER_REMOVIDA_POIS_ESTA_EM_USO = "Cozinha de codigo %d nn pode ser removida, pois esta em uso.";
+    public static final ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
@@ -31,19 +32,16 @@ public class CadastroCozinhaService {
     private RestauranteRepository restauranteRepository;
 
     public List<CozinhaDto> listar(){
-        ModelMapper modelMapper = new ModelMapper();
         List<Cozinha> cozinhas = cozinhaRepository.findAll();
         return cozinhas.stream().map(cozinha -> modelMapper.map(cozinha, CozinhaDto.class)).collect(Collectors.toList());
     }
 
     public List<CozinhaDto> listarPorNome(String nome){
-        ModelMapper modelMapper = new ModelMapper();
         List<Cozinha> cozinhas = cozinhaRepository.findTodasByNomeContaining(nome);
         return cozinhas.stream().map(cozinha -> modelMapper.map(cozinha, CozinhaDto.class)).collect(Collectors.toList());
     }
 
     public CozinhaDto findUnicoByNome(String nome){
-        ModelMapper modelMapper = new ModelMapper();
         Optional<Cozinha> cozinha = cozinhaRepository.findUniqueByNome(nome);
         if(cozinha.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format(COZINHA_NAO_ENCONTRADA_NOME));
@@ -56,7 +54,6 @@ public class CadastroCozinhaService {
     }
 
     public CozinhaDto findById(Long Id){
-        ModelMapper modelMapper = new ModelMapper();
         Optional<Cozinha> cozinha = cozinhaRepository.findById(Id);
         if(cozinha.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format(COZINHA_COM_O_ID_D_NAO_FOI_ENCONTRADA));
@@ -66,14 +63,12 @@ public class CadastroCozinhaService {
 
 
     public CozinhaDto salvar(CozinhaDto cozinhaDto){
-        ModelMapper modelMapper = new ModelMapper();
         Cozinha cozinha = modelMapper.map(cozinhaDto, Cozinha.class);
         cozinhaRepository.save(cozinha);
         return modelMapper.map(cozinha, CozinhaDto.class);
     }
 
     public CozinhaDto atualizar(Long Id, CozinhaDto cozinhaDto){
-        ModelMapper modelMapper = new ModelMapper();
         Optional<Cozinha> cozinhaAtualizar = cozinhaRepository.findById(Id);
         if(cozinhaAtualizar.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format(COZINHA_COM_O_ID_D_NAO_FOI_ENCONTRADA, Id));

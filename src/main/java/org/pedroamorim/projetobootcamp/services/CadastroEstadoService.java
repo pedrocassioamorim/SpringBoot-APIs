@@ -21,19 +21,18 @@ public class CadastroEstadoService {
 
     public static final String ESTADO_DE_ID_D_NAO_ENCONTRADO = "Estado de ID %d nao encontrado";
     public static final String ESTADO_DE_ID_D_NN_PODE_SER_REMOVIDO_POIS_ESTA_SENDO_USADO = "Estado de ID %d nn pode ser removido pois esta sendo usado";
+    public static final ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     private EstadoRepository estadoRepository;
 
     public List<EstadoDto> listar(){
-        ModelMapper modelMapper = new ModelMapper();
         List<Estado> estados = estadoRepository.findAll();
         return estados.stream().map(estado -> modelMapper.map(estado, EstadoDto.class)).collect(Collectors.toList());
     }
 
 
     public EstadoDto buscar(Long Id){
-        ModelMapper modelMapper = new ModelMapper();
         Optional<Estado> estado = estadoRepository.findById(Id);
         if(estado.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format(ESTADO_DE_ID_D_NAO_ENCONTRADO, Id));
@@ -42,13 +41,11 @@ public class CadastroEstadoService {
     }
 
     public EstadoDto salvar(EstadoDto estadoDto){
-        ModelMapper modelMapper = new ModelMapper();
         estadoRepository.save(modelMapper.map(estadoDto, Estado.class));
         return estadoDto;
     }
 
     public EstadoDto atualizar(Long Id, EstadoDto estadoDto){
-        ModelMapper modelMapper = new ModelMapper();
         Optional<Estado> estadoAtualizar = estadoRepository.findById(Id);
         if (estadoAtualizar.isEmpty()) {
             throw new EntidadeNaoEncontradaException(String.format(ESTADO_DE_ID_D_NAO_ENCONTRADO, Id));
