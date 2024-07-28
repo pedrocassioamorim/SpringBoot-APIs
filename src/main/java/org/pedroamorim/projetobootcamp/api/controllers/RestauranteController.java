@@ -1,5 +1,6 @@
 package org.pedroamorim.projetobootcamp.api.controllers;
 
+import org.pedroamorim.projetobootcamp.domain.dtos.RestauranteDto;
 import org.pedroamorim.projetobootcamp.domain.model.Restaurante;
 import org.pedroamorim.projetobootcamp.services.CadastroRestauranteService;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
@@ -24,15 +25,15 @@ public class RestauranteController {
 
 
     @GetMapping
-    public ResponseEntity<List<Restaurante>> listar(){
-        List<Restaurante> restaurantes = restauranteService.listar();
+    public ResponseEntity<List<RestauranteDto>> listar(){
+        List<RestauranteDto> restaurantes = restauranteService.listar();
         return ResponseEntity.ok().body(restaurantes);
     }
 
     @GetMapping("/{Id}")
-    public ResponseEntity<Restaurante> buscar(@PathVariable Long Id){
+    public ResponseEntity<RestauranteDto> buscar(@PathVariable Long Id){
         try{
-            Restaurante restaurante = restauranteService.buscar(Id);
+            RestauranteDto restaurante = restauranteService.buscar(Id);
             return ResponseEntity.ok().body(restaurante);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
@@ -40,26 +41,26 @@ public class RestauranteController {
     }
 
     @GetMapping("restaurantes/por-taxa-frete")
-    public ResponseEntity<List<Restaurante>> listarPorTaxaFrete(@RequestParam BigDecimal taxaInitial, @RequestParam BigDecimal taxaFinal){
-        List<Restaurante> restaurantes = restauranteService.findByTaxaFreteBetween(taxaInitial, taxaFinal);
+    public ResponseEntity<List<RestauranteDto>> listarPorTaxaFrete(@RequestParam BigDecimal taxaInitial, @RequestParam BigDecimal taxaFinal){
+        List<RestauranteDto> restaurantes = restauranteService.findByTaxaFreteBetween(taxaInitial, taxaFinal);
         return ResponseEntity.ok().body(restaurantes);
     }
 
     @GetMapping("restaurantes/por-nome-e-id")
-    public ResponseEntity<List<Restaurante>> listarPorNomeEId(@RequestParam String nome, @RequestParam Long id){
-        List<Restaurante> restaurantes = restauranteService.findByNomeContainingAndCozinhaId(nome, id);
+    public ResponseEntity<List<RestauranteDto>> listarPorNomeEId(@RequestParam String nome, @RequestParam Long id){
+        List<RestauranteDto> restaurantes = restauranteService.findByNomeContainingAndCozinhaId(nome, id);
         return ResponseEntity.ok().body(restaurantes);
     }
 
     @GetMapping("restaurantes/primeiro-por-nome")
-    public ResponseEntity<Optional<Restaurante>> retornaPrimeiroPorNome(@RequestParam String nome){
-        Optional<Restaurante> restaurante = restauranteService.findFirstRestauranteByNomeContaing(nome);
+    public ResponseEntity<Optional<RestauranteDto>> retornaPrimeiroPorNome(@RequestParam String nome){
+        Optional<RestauranteDto> restaurante = restauranteService.findFirstRestauranteByNomeContaing(nome);
         return ResponseEntity.ok().body(restaurante);
     }
 
     @GetMapping("restaurantes/top-2-por-nome")
-    public ResponseEntity<List<Restaurante>> retornaTop2ByNome(@RequestParam String nome){
-        List<Restaurante> restaurantes = restauranteService.findTop2ByNomeContaing(nome);
+    public ResponseEntity<List<RestauranteDto>> retornaTop2ByNome(@RequestParam String nome){
+        List<RestauranteDto> restaurantes = restauranteService.findTop2ByNomeContaing(nome);
         return ResponseEntity.ok().body(restaurantes);
     }
 
@@ -70,7 +71,7 @@ public class RestauranteController {
     }
 
     @PostMapping
-    public ResponseEntity<?> adicionar (@RequestBody Restaurante restaurante){
+    public ResponseEntity<?> adicionar (@RequestBody RestauranteDto restaurante){
         try{
             restaurante = restauranteService.salvar(restaurante);
             URI uri = ServletUriComponentsBuilder
@@ -85,9 +86,9 @@ public class RestauranteController {
     }
 
     @PutMapping("/{Id}")
-    public ResponseEntity<?> atualizar(@RequestBody Restaurante restaurante, @PathVariable Long Id){
+    public ResponseEntity<?> atualizar(@RequestBody RestauranteDto restaurante, @PathVariable Long Id){
         try{
-            Restaurante restauranteAtualizar = restauranteService.atualizar(Id, restaurante);
+            RestauranteDto restauranteAtualizar = restauranteService.atualizar(Id, restaurante);
             return ResponseEntity.ok().body(restauranteAtualizar);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
