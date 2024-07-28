@@ -40,6 +40,12 @@ public class RestauranteController {
         }
     }
 
+    @GetMapping("restaurantes/por-nome-e-frete")
+    public ResponseEntity<List<RestauranteDto>> buscarPorNomeEFrete(@RequestParam String nome, @RequestParam BigDecimal taxaInicial, @RequestParam BigDecimal taxaFinal){
+        List<RestauranteDto> restauranteDtos = restauranteService.consultarPorNomeETaxaFrete(nome, taxaInicial, taxaFinal);
+        return ResponseEntity.ok().body(restauranteDtos);
+    }
+
     @GetMapping("restaurantes/por-taxa-frete")
     public ResponseEntity<List<RestauranteDto>> listarPorTaxaFrete(@RequestParam BigDecimal taxaInitial, @RequestParam BigDecimal taxaFinal){
         List<RestauranteDto> restaurantes = restauranteService.findByTaxaFreteBetween(taxaInitial, taxaFinal);

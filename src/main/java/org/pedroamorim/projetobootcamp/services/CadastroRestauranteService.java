@@ -73,6 +73,12 @@ public class CadastroRestauranteService {
         return restauranteRepository.countByCozinhaId(cozinhaId);
     }
 
+    public List<RestauranteDto> consultarPorNomeETaxaFrete(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
+        List<Restaurante> restaurantes = restauranteRepository.consultarPorNomeETaxaFrete(nome, taxaInicial, taxaFinal);
+        return restaurantes.stream().map((element) -> modelMapper.map(element, RestauranteDto.class)).collect(Collectors.toList());
+    }
+
+
     public RestauranteDto salvar(RestauranteDto restauranteDto){
         Long cozinhaId = restauranteDto.getCozinha().getId();
         Optional<Cozinha> cozinha = cozinhaRepository.findById(cozinhaId);
