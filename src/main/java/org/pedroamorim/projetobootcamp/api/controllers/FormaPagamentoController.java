@@ -1,6 +1,6 @@
 package org.pedroamorim.projetobootcamp.api.controllers;
 
-import org.pedroamorim.projetobootcamp.domain.model.FormaPagamento;
+import org.pedroamorim.projetobootcamp.domain.dtos.FormaPagamentoDto;
 import org.pedroamorim.projetobootcamp.services.CadastroFormaPagamentoService;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
@@ -21,15 +21,15 @@ public class FormaPagamentoController {
 
 
     @GetMapping
-    public ResponseEntity<List<FormaPagamento>> listar(){
-        List<FormaPagamento> formaPagamentos = formaPagamentoService.listar();
+    public ResponseEntity<List<FormaPagamentoDto>> listar(){
+        List<FormaPagamentoDto> formaPagamentos = formaPagamentoService.listar();
         return ResponseEntity.ok().body(formaPagamentos);
     }
 
     @GetMapping("/{Id}")
-    public ResponseEntity<FormaPagamento> buscar(@PathVariable Long Id){
+    public ResponseEntity<FormaPagamentoDto> buscar(@PathVariable Long Id){
         try{
-            FormaPagamento formaPagamento = formaPagamentoService.buscar(Id);
+            FormaPagamentoDto formaPagamento = formaPagamentoService.buscar(Id);
             return ResponseEntity.ok().body(formaPagamento);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
@@ -37,8 +37,8 @@ public class FormaPagamentoController {
     }
 
     @PostMapping
-    public ResponseEntity<FormaPagamento> salvar (@RequestBody FormaPagamento formaPagamento){
-        FormaPagamento formaPagamentoSalvar = formaPagamentoService.salvar(formaPagamento);
+    public ResponseEntity<FormaPagamentoDto> salvar (@RequestBody FormaPagamentoDto formaPagamento){
+        FormaPagamentoDto formaPagamentoSalvar = formaPagamentoService.salvar(formaPagamento);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{Id}")
@@ -48,9 +48,9 @@ public class FormaPagamentoController {
     }
 
     @PutMapping("/{Id}")
-    public ResponseEntity<FormaPagamento> atualizar (@RequestBody FormaPagamento formaPagamento, @PathVariable Long Id){
+    public ResponseEntity<FormaPagamentoDto> atualizar (@RequestBody FormaPagamentoDto formaPagamento, @PathVariable Long Id){
         try{
-            FormaPagamento formaPagamentoAtualizar = formaPagamentoService.atualizar(Id, formaPagamento);
+            FormaPagamentoDto formaPagamentoAtualizar = formaPagamentoService.atualizar(Id, formaPagamento);
             return ResponseEntity.ok().body(formaPagamentoAtualizar);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
@@ -58,7 +58,7 @@ public class FormaPagamentoController {
     }
 
     @DeleteMapping("/{Id}")
-    public ResponseEntity<FormaPagamento> excluir (@PathVariable Long Id){
+    public ResponseEntity<?> excluir (@PathVariable Long Id){
         try{
             formaPagamentoService.excluir(Id);
             return ResponseEntity.noContent().build();

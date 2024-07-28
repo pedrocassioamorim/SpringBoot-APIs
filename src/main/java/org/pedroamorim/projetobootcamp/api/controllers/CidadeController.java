@@ -1,6 +1,6 @@
 package org.pedroamorim.projetobootcamp.api.controllers;
 
-import org.pedroamorim.projetobootcamp.domain.model.Cidade;
+import org.pedroamorim.projetobootcamp.domain.dtos.CidadeDto;
 import org.pedroamorim.projetobootcamp.services.CadastroCidadeService;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
@@ -22,15 +22,15 @@ public class CidadeController {
 
 
     @GetMapping
-    public ResponseEntity<List<Cidade>> listar (){
-        List<Cidade> cidades = cidadeService.listar();
+    public ResponseEntity<List<CidadeDto>> listar (){
+        List<CidadeDto> cidades = cidadeService.listar();
         return ResponseEntity.ok().body(cidades);
     }
 
     @GetMapping("/{Id}")
-    public ResponseEntity<Cidade> buscar(@PathVariable Long Id){
+    public ResponseEntity<CidadeDto> buscar(@PathVariable Long Id){
         try{
-            Cidade cidade = cidadeService.buscar(Id);
+            CidadeDto cidade = cidadeService.buscar(Id);
             return ResponseEntity.ok().body(cidade);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
@@ -38,13 +38,13 @@ public class CidadeController {
     }
 
     @PostMapping
-    public ResponseEntity<?> adicionar (@RequestBody Cidade cidade){
+    public ResponseEntity<?> adicionar (@RequestBody CidadeDto cidadeDto){
         try{
-            Cidade cidadeSalvar = cidadeService.salvar(cidade);
+            CidadeDto cidadeSalvar = cidadeService.salvar(cidadeDto);
             URI uri = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("/{Id}")
-                    .buildAndExpand(cidade.getId())
+                    .buildAndExpand(cidadeDto.getId())
                     .toUri();
             return ResponseEntity.created(uri).body(cidadeSalvar);
         } catch (RequisicaoRuimException e){
@@ -55,9 +55,9 @@ public class CidadeController {
     }
 
     @PutMapping("/{Id}")
-    public ResponseEntity<?> atualizar (@RequestBody Cidade cidade, @PathVariable Long Id){
+    public ResponseEntity<?> atualizar (@RequestBody CidadeDto cidadeDto, @PathVariable Long Id){
         try{
-            Cidade cidadeAtualizar = cidadeService.atualizar(Id, cidade);
+            CidadeDto cidadeAtualizar = cidadeService.atualizar(Id, cidadeDto);
             return ResponseEntity.ok().body(cidadeAtualizar);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
@@ -67,7 +67,7 @@ public class CidadeController {
     }
 
     @DeleteMapping("/{Id}")
-    public ResponseEntity<Cidade> excluir (@PathVariable Long Id){
+    public ResponseEntity<CidadeDto> excluir (@PathVariable Long Id){
         try{
             cidadeService.excluir(Id);
             return ResponseEntity.noContent().build();

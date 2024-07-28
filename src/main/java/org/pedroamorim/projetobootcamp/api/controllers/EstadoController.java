@@ -1,6 +1,6 @@
 package org.pedroamorim.projetobootcamp.api.controllers;
 
-import org.pedroamorim.projetobootcamp.domain.model.Estado;
+import org.pedroamorim.projetobootcamp.domain.dtos.EstadoDto;
 import org.pedroamorim.projetobootcamp.services.CadastroEstadoService;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
@@ -21,15 +21,15 @@ public class EstadoController {
 
 
     @GetMapping
-    public ResponseEntity<List<Estado>> listar(){
-        List<Estado> estados = estadoService.listar();
+    public ResponseEntity<List<EstadoDto>> listar(){
+        List<EstadoDto> estados = estadoService.listar();
         return ResponseEntity.ok().body(estados);
     }
 
     @GetMapping("/{Id}")
-    public ResponseEntity<Estado> buscar(@PathVariable Long Id){
+    public ResponseEntity<EstadoDto> buscar(@PathVariable Long Id){
         try{
-            Estado estado = estadoService.buscar(Id);
+            EstadoDto estado = estadoService.buscar(Id);
             return ResponseEntity.ok().body(estado);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
@@ -37,8 +37,8 @@ public class EstadoController {
     }
 
     @PostMapping
-    public ResponseEntity<Estado> adicionar (@RequestBody Estado estado){
-        Estado estadoSalvar = estadoService.salvar(estado);
+    public ResponseEntity<EstadoDto> adicionar (@RequestBody EstadoDto estado){
+        EstadoDto estadoSalvar = estadoService.salvar(estado);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{Id}")
@@ -48,9 +48,9 @@ public class EstadoController {
     }
 
     @PutMapping("/{Id}")
-    public ResponseEntity<Estado> atualizar (@RequestBody Estado estado, @PathVariable Long Id){
+    public ResponseEntity<EstadoDto> atualizar (@RequestBody EstadoDto estado, @PathVariable Long Id){
         try{
-            Estado estadoAtualizar = estadoService.atualizar(Id, estado);
+            EstadoDto estadoAtualizar = estadoService.atualizar(Id, estado);
             return ResponseEntity.ok().body(estadoAtualizar);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
@@ -59,7 +59,7 @@ public class EstadoController {
 
 
     @DeleteMapping("/{Id}")
-    public ResponseEntity<Estado> deletar (@PathVariable Long Id){
+    public ResponseEntity<?> deletar (@PathVariable Long Id){
         try{
             estadoService.excluir(Id);
             return ResponseEntity.noContent().build();

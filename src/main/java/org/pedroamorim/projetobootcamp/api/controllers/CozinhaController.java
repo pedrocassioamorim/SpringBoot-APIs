@@ -1,7 +1,7 @@
 package org.pedroamorim.projetobootcamp.api.controllers;
 
 
-import org.pedroamorim.projetobootcamp.domain.model.Cozinha;
+import org.pedroamorim.projetobootcamp.domain.dtos.CozinhaDto;
 import org.pedroamorim.projetobootcamp.services.CadastroCozinhaService;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
@@ -13,7 +13,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController @RequestMapping("/cozinhas")
@@ -23,14 +22,14 @@ public class CozinhaController {
     private CadastroCozinhaService cozinhaService;
 
     @GetMapping
-    public ResponseEntity<List<Cozinha>> listar(){
-        List<Cozinha> cozinhas = cozinhaService.listar();
+    public ResponseEntity<List<CozinhaDto>> listar(){
+        List<CozinhaDto> cozinhas = cozinhaService.listar();
         return ResponseEntity.ok().body(cozinhas);
     }
 
     @GetMapping("cozinhas/unico-por-nome")
-    public ResponseEntity<Optional<Cozinha>> findUnicoByName(@RequestParam String nome){
-        Optional<Cozinha> cozinha = cozinhaService.findUnicoByNome(nome);
+    public ResponseEntity<CozinhaDto> findUnicoByName(@RequestParam String nome){
+        CozinhaDto cozinha = cozinhaService.findUnicoByNome(nome);
         return ResponseEntity.ok().body(cozinha);
     }
 
@@ -42,9 +41,9 @@ public class CozinhaController {
     }
 
     @GetMapping("/{Id}")
-    public ResponseEntity<Cozinha> buscar(@PathVariable Long Id){
+    public ResponseEntity<CozinhaDto> buscar(@PathVariable Long Id){
         try{
-            Cozinha cozinha = cozinhaService.findById(Id);
+            CozinhaDto cozinha = cozinhaService.findById(Id);
             return ResponseEntity.ok().body(cozinha);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
@@ -52,14 +51,14 @@ public class CozinhaController {
     }
 
     @GetMapping("/cozinhas/por-nome")
-    public ResponseEntity<List<Cozinha>> buscarPorNome(@RequestParam String nome){
-        List<Cozinha> cozinhas = cozinhaService.listarPorNome(nome);
+    public ResponseEntity<List<CozinhaDto>> buscarPorNome(@RequestParam String nome){
+        List<CozinhaDto> cozinhas = cozinhaService.listarPorNome(nome);
         return ResponseEntity.ok().body(cozinhas);
     }
 
     @PostMapping
-    public ResponseEntity<Cozinha> adicionar(@RequestBody Cozinha cozinha){
-        Cozinha cozinhaSalvar = cozinhaService.salvar(cozinha);
+    public ResponseEntity<CozinhaDto> adicionar(@RequestBody CozinhaDto cozinha){
+        CozinhaDto cozinhaSalvar = cozinhaService.salvar(cozinha);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{Id}")
@@ -69,9 +68,9 @@ public class CozinhaController {
     }
 
     @PutMapping("/{Id}")
-    public ResponseEntity<?> atualizar(@PathVariable("Id") Long Id, @RequestBody Cozinha cozinha){
+    public ResponseEntity<?> atualizar(@PathVariable("Id") Long Id, @RequestBody CozinhaDto cozinha){
         try{
-            Cozinha cozinhaAtualizar = cozinhaService.atualizar(Id, cozinha);
+            CozinhaDto cozinhaAtualizar = cozinhaService.atualizar(Id, cozinha);
             return ResponseEntity.ok().body(cozinhaAtualizar);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
@@ -79,7 +78,7 @@ public class CozinhaController {
     }
 
     @DeleteMapping("/{Id}")
-    public ResponseEntity<Cozinha> deletar(@PathVariable Long Id){
+    public ResponseEntity<?> deletar(@PathVariable Long Id){
         try{
             cozinhaService.excluir(Id);
             return ResponseEntity.noContent().build();

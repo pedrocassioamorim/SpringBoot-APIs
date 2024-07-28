@@ -1,6 +1,6 @@
 package org.pedroamorim.projetobootcamp.api.controllers;
 
-import org.pedroamorim.projetobootcamp.domain.model.Permissao;
+import org.pedroamorim.projetobootcamp.domain.dtos.PermissaoDto;
 import org.pedroamorim.projetobootcamp.services.CadastroPermissaoService;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
@@ -21,15 +21,15 @@ public class PermissaoController {
 
 
     @GetMapping
-    public ResponseEntity<List<Permissao>> listar(){
-        List<Permissao> permissoes = permissaoService.listar();
+    public ResponseEntity<List<PermissaoDto>> listar(){
+        List<PermissaoDto> permissoes = permissaoService.listar();
         return ResponseEntity.ok().body(permissoes);
     }
 
     @GetMapping("/{Id}")
-    public ResponseEntity<Permissao> buscar (@PathVariable Long Id){
+    public ResponseEntity<PermissaoDto> buscar (@PathVariable Long Id){
         try{
-            Permissao permissao = permissaoService.buscar(Id);
+            PermissaoDto permissao = permissaoService.buscar(Id);
             return ResponseEntity.ok().body(permissao);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
@@ -37,8 +37,8 @@ public class PermissaoController {
     }
 
     @PostMapping
-    public ResponseEntity<Permissao> salvar (@RequestBody Permissao permissao){
-        Permissao permissaoSalvar = permissaoService.salvar(permissao);
+    public ResponseEntity<PermissaoDto> salvar (@RequestBody PermissaoDto permissao){
+        PermissaoDto permissaoSalvar = permissaoService.salvar(permissao);
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{Id}")
@@ -48,9 +48,9 @@ public class PermissaoController {
     }
 
     @PutMapping("/{Id}")
-    public ResponseEntity<Permissao> atualizar (@PathVariable Long Id, @RequestBody Permissao permissao){
+    public ResponseEntity<PermissaoDto> atualizar (@PathVariable Long Id, @RequestBody PermissaoDto permissao){
         try{
-            Permissao permissaoAtualizar = permissaoService.atualizar(permissao, Id);
+            PermissaoDto permissaoAtualizar = permissaoService.atualizar(permissao, Id);
             return ResponseEntity.ok().body(permissaoAtualizar);
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
@@ -58,7 +58,7 @@ public class PermissaoController {
     }
 
     @DeleteMapping("/{Id}")
-    public ResponseEntity<Permissao> excluir (@PathVariable Long Id){
+    public ResponseEntity<?> excluir (@PathVariable Long Id){
         try{
             permissaoService.excluir(Id);
             return ResponseEntity.noContent().build();
