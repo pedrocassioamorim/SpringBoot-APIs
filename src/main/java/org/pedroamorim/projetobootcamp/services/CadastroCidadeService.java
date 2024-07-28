@@ -8,7 +8,6 @@ import org.pedroamorim.projetobootcamp.repositories.CidadeRepository;
 import org.pedroamorim.projetobootcamp.repositories.EstadoRepository;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
-import org.pedroamorim.projetobootcamp.services.exceptions.RequisicaoRuimException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,7 +25,7 @@ public class CadastroCidadeService {
     public static final String CIDADE_DE_ID_D_NAO_ENCONTRADA = "Cidade de ID %d nao encontrada";
     public static final String NAO_EXISTE_UM_ESTADO_COM_O_ID_D = "Não existe um Estado com o ID %d";
     public static final String CIDADE_DE_ID_D_NAO_PODE_SER_REMOVIDA_POIS_ESTA_SENDO_USADA = "Cidade de ID %d nao pode ser removida pois esta sendo usada";
-
+    public static final ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     private CidadeRepository cidadeRepository;
@@ -37,7 +36,6 @@ public class CadastroCidadeService {
 
 
     public List<CidadeDto> listar(){
-        ModelMapper modelMapper = new ModelMapper();
         List<Cidade> cidades = cidadeRepository.findAll();
         return cidades.stream()
                 .map(cidade -> modelMapper.map(cidade, CidadeDto.class))
@@ -45,7 +43,6 @@ public class CadastroCidadeService {
     }
 
     public CidadeDto buscar (Long Id){
-        ModelMapper modelMapper = new ModelMapper();
         Optional<Cidade> cidade = cidadeRepository.findById(Id);
         if (cidade.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format(CIDADE_DE_ID_D_NAO_ENCONTRADA, Id));
@@ -54,7 +51,6 @@ public class CadastroCidadeService {
     }
 
     public CidadeDto salvar(CidadeDto cidadeDto){
-        ModelMapper modelMapper = new ModelMapper();
         Long estadoId = cidadeDto.getEstado().getId();
         Optional<Estado> estado = estadoRepository.findById(estadoId);
         if (estado.isEmpty()){
@@ -65,7 +61,6 @@ public class CadastroCidadeService {
     }
 
     public CidadeDto atualizar (Long Id, CidadeDto cidadeDto){
-        ModelMapper modelMapper = new ModelMapper();
         Optional<Cidade> cidadeAtualizar = cidadeRepository.findById(Id);
         if (cidadeAtualizar.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format(CIDADE_DE_ID_D_NAO_ENCONTRADA, Id));
