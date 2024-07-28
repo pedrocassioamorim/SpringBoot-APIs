@@ -1,6 +1,6 @@
 package org.pedroamorim.projetobootcamp.domain.dtos;
 
-import lombok.Value;
+import lombok.Data;
 import org.pedroamorim.projetobootcamp.domain.model.Permissao;
 
 import java.io.Serializable;
@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * DTO for {@link Permissao}
  */
-@Value
+@Data
 public class PermissaoDto implements Serializable {
     Long id;
     String nome;
