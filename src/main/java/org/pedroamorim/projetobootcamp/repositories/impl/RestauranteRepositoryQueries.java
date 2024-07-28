@@ -6,5 +6,5 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface RestauranteRepositoryQueries {
-    List<Restaurante> consultarPorNomeETaxaFrete(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
+    List<Restaurante> consultaNomeEFrete(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal);
 }

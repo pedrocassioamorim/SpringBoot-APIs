@@ -74,7 +74,7 @@ public class CadastroRestauranteService {
     }
 
     public List<RestauranteDto> consultarPorNomeETaxaFrete(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
-        List<Restaurante> restaurantes = restauranteRepository.consultarPorNomeETaxaFrete(nome, taxaInicial, taxaFinal);
+        List<Restaurante> restaurantes = restauranteRepository.consultaNomeEFrete(nome, taxaInicial, taxaFinal);
         return restaurantes.stream().map((element) -> modelMapper.map(element, RestauranteDto.class)).collect(Collectors.toList());
     }
 
