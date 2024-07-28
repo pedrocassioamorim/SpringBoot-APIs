@@ -1,5 +1,7 @@
 package org.pedroamorim.projetobootcamp.services;
 
+import org.modelmapper.ModelMapper;
+import org.pedroamorim.projetobootcamp.domain.dtos.EstadoDto;
 import org.pedroamorim.projetobootcamp.domain.model.Estado;
 import org.pedroamorim.projetobootcamp.repositories.EstadoRepository;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CadastroEstadoService {
@@ -22,39 +25,43 @@ public class CadastroEstadoService {
     @Autowired
     private EstadoRepository estadoRepository;
 
-    public List<Estado> listar(){
-        return estadoRepository.findAll();
+    public List<EstadoDto> listar(){
+        ModelMapper modelMapper = new ModelMapper();
+        List<Estado> estados = estadoRepository.findAll();
+        return estados.stream().map(estado -> modelMapper.map(estado, EstadoDto.class)).collect(Collectors.toList());
     }
 
 
-    public Estado buscar(Long Id){
+    public EstadoDto buscar(Long Id){
+        ModelMapper modelMapper = new ModelMapper();
         Optional<Estado> estado = estadoRepository.findById(Id);
         if(estado.isEmpty()){
             throw new EntidadeNaoEncontradaException(String.format(ESTADO_DE_ID_D_NAO_ENCONTRADO, Id));
         }
-        return estado.get();
+        return modelMapper.map(estado.get(), EstadoDto.class);
     }
 
-    public Estado salvar(Estado estado){
-        return estadoRepository.save(estado);
+    public EstadoDto salvar(EstadoDto estadoDto){
+        ModelMapper modelMapper = new ModelMapper();
+        estadoRepository.save(modelMapper.map(estadoDto, Estado.class));
+        return estadoDto;
     }
 
-    public Estado atualizar(Long Id, Estado estado){
+    public EstadoDto atualizar(Long Id, EstadoDto estadoDto){
+        ModelMapper modelMapper = new ModelMapper();
         Optional<Estado> estadoAtualizar = estadoRepository.findById(Id);
         if (estadoAtualizar.isEmpty()) {
             throw new EntidadeNaoEncontradaException(String.format(ESTADO_DE_ID_D_NAO_ENCONTRADO, Id));
-        } else {
-            BeanUtils.copyProperties(estado, estadoAtualizar.get(), "id");
-            return estadoRepository.save(estado);
         }
+        BeanUtils.copyProperties(estadoDto, estadoAtualizar.get(), "id");
+        estadoRepository.save(estadoAtualizar.get());
+        return modelMapper.map(estadoAtualizar.get(), EstadoDto.class);
     }
 
     public void excluir (Long Id){
         try{
             Optional<Estado> estadoAtualizar = estadoRepository.findById(Id);
-            if(estadoAtualizar.isPresent()){
-                estadoRepository.delete(estadoAtualizar.get());
-            }
+            estadoAtualizar.ifPresent(estado -> estadoRepository.delete(estado));
         } catch (EmptyResultDataAccessException e){
             throw new EntidadeNaoEncontradaException(String.format(ESTADO_DE_ID_D_NAO_ENCONTRADO, Id));
         } catch (DataIntegrityViolationException f){
