@@ -55,7 +55,7 @@ public class CadastroRestauranteService {
     }
 
     public List<RestauranteDto> findByNomeContainingAndCozinhaId(String nome, Long cozinhaId) {
-        List<Restaurante> restaurantes = restauranteRepository.findByNomeContainingAndCozinhaId(nome, cozinhaId);
+        List<Restaurante> restaurantes = restauranteRepository.consultarPorNome(nome, cozinhaId);
         return restaurantes.stream().map((element) -> modelMapper.map(element, RestauranteDto.class)).collect(Collectors.toList());
     }
 

@@ -20,6 +20,7 @@ public class PermissaoController {
     private CadastroPermissaoService permissaoService;
 
 
+
     @GetMapping
     public ResponseEntity<List<PermissaoDto>> listar(){
         List<PermissaoDto> permissoes = permissaoService.listar();

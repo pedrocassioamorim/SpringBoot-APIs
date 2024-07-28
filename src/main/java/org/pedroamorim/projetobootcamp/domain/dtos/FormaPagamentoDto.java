@@ -1,6 +1,6 @@
 package org.pedroamorim.projetobootcamp.domain.dtos;
 
-import lombok.Value;
+import lombok.Data;
 import org.pedroamorim.projetobootcamp.domain.model.FormaPagamento;
 
 import java.io.Serializable;
@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * DTO for {@link FormaPagamento}
  */
-@Value
+@Data
 public class FormaPagamentoDto implements Serializable {
     Long id;
     String name;
