@@ -1,7 +1,6 @@
 package org.pedroamorim.projetobootcamp.api.controllers;
 
 import org.pedroamorim.projetobootcamp.domain.dtos.RestauranteDto;
-import org.pedroamorim.projetobootcamp.domain.model.Restaurante;
 import org.pedroamorim.projetobootcamp.services.CadastroRestauranteService;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeEmUsoException;
 import org.pedroamorim.projetobootcamp.services.exceptions.EntidadeNaoEncontradaException;
@@ -15,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController @RequestMapping("/restaurantes")
@@ -38,6 +38,12 @@ public class RestauranteController {
         } catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("restaurantes/por-nome-e-frete")
+    public ResponseEntity<List<RestauranteDto>> buscarPorNomeEFrete(@RequestParam String nome, @RequestParam BigDecimal taxaInicial, @RequestParam BigDecimal taxaFinal){
+        List<RestauranteDto> restauranteDtos = restauranteService.consultarPorNomeETaxaFrete(nome, taxaInicial, taxaFinal);
+        return ResponseEntity.ok().body(restauranteDtos);
     }
 
     @GetMapping("restaurantes/por-taxa-frete")
@@ -98,7 +104,7 @@ public class RestauranteController {
     }
 
     @DeleteMapping("/{Id}")
-    public ResponseEntity<Restaurante> deletar (@PathVariable Long Id){
+    public ResponseEntity<?> deletar (@PathVariable Long Id){
         try{
             restauranteService.excluir(Id);
             return ResponseEntity.noContent().build();
@@ -107,6 +113,17 @@ public class RestauranteController {
         } catch (EntidadeEmUsoException f){
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
+    }
+
+    @PatchMapping("/{Id}")
+    public ResponseEntity<?> atualizarParcial(@PathVariable Long Id, @RequestBody Map<String, Object> campos){
+        try{
+            RestauranteDto restauranteDto = restauranteService.atualizarParcial(Id, campos);
+            return ResponseEntity.ok().body(restauranteDto);
+        }catch (EntidadeNaoEncontradaException e){
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
 

@@ -1,5 +1,6 @@
 package org.pedroamorim.projetobootcamp.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.pedroamorim.projetobootcamp.domain.dtos.RestauranteDto;
 import org.pedroamorim.projetobootcamp.domain.model.Cozinha;
@@ -14,9 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,6 +35,9 @@ public class CadastroRestauranteService {
 
     @Autowired
     private RestauranteRepository restauranteRepository;
+
+    @Autowired
+    private CadastroCozinhaService cozinhaService;
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
@@ -73,6 +80,12 @@ public class CadastroRestauranteService {
         return restauranteRepository.countByCozinhaId(cozinhaId);
     }
 
+    public List<RestauranteDto> consultarPorNomeETaxaFrete(String nome, BigDecimal taxaInicial, BigDecimal taxaFinal) {
+        List<Restaurante> restaurantes = restauranteRepository.consultaNomeEFrete(nome, taxaInicial, taxaFinal);
+        return restaurantes.stream().map((element) -> modelMapper.map(element, RestauranteDto.class)).collect(Collectors.toList());
+    }
+
+
     public RestauranteDto salvar(RestauranteDto restauranteDto){
         Long cozinhaId = restauranteDto.getCozinha().getId();
         Optional<Cozinha> cozinha = cozinhaRepository.findById(cozinhaId);
@@ -93,6 +106,18 @@ public class CadastroRestauranteService {
         return modelMapper.map(restauranteAtualizar.get(), RestauranteDto.class);
     }
 
+    public RestauranteDto atualizarParcial(Long Id, Map<String, Object> campos){
+        Optional<Restaurante> restaurante = restauranteRepository.findById(Id);
+        if (restaurante.isEmpty()){
+            throw new EntidadeNaoEncontradaException(String.format(NAO_FOI_ENCONTRADO_UM_RESTAURANTE_COM_O_ID_D, Id));
+        }
+
+        Restaurante restauranteAtualizar = merge(campos, restaurante.get());
+        RestauranteDto restauranteDto = atualizar(Id, modelMapper.map(restauranteAtualizar, RestauranteDto.class));
+
+        return restauranteDto;
+    }
+
     public void excluir (Long Id){
         try{
             Optional<Restaurante> restaurante = restauranteRepository.findById(Id);
@@ -103,6 +128,44 @@ public class CadastroRestauranteService {
             throw new EntidadeEmUsoException(String.format(NAO_PODE_EXCLUIR_RESTAURANTE_DE_CODIGO_D_POIS_ESTA_EM_USO, Id));
         }
     }
+
+    private Restaurante merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino) {
+        // UMA SOLUÇÃO MAIS GENÉRICA:
+        ObjectMapper objectMapper = new ObjectMapper();
+        Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
+
+        System.out.println(restauranteOrigem);
+
+        dadosOrigem.forEach((campo, valor) -> {
+            Field field = ReflectionUtils.findField(Restaurante.class, campo);
+            field.setAccessible(true);
+
+            Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
+
+            System.out.println(campo + " = " + valor + " = " + novoValor);
+
+            ReflectionUtils.setField(field, restauranteDestino, novoValor);
+
+
+
+            // UMA SOLUÇÃO MENOS GENÉRICA:
+            // Obter o tipo do campo no DTO:
+            //Class<?> fieldType = field.getType();
+
+            // ===================== Mapeando formatos especiais (BigDecimal):
+//            if(fieldType == BigDecimal.class){
+//                ReflectionUtils.setField(field, restauranteDestinoDto, new BigDecimal(String.valueOf(valor)));
+//            } else if (fieldType.isAssignableFrom(valor.getClass())) {
+//                ReflectionUtils.setField(field, restauranteDestinoDto, valor);
+//            } else {
+//                throw new IllegalArgumentException("Valor incorreto para o campo:" + campo.toString());
+//            }
+//            System.out.println(campo + " = " + valor);
+        });
+
+        return restauranteDestino;
+    }
+
 
 
 }
