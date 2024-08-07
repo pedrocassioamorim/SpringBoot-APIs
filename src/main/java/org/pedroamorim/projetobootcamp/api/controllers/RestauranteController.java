@@ -8,11 +8,9 @@ import org.pedroamorim.projetobootcamp.services.exceptions.RequisicaoRuimExcepti
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
@@ -119,37 +117,16 @@ public class RestauranteController {
 
     @PatchMapping("/{Id}")
     public ResponseEntity<?> atualizarParcial(@PathVariable Long Id, @RequestBody Map<String, Object> campos){
-
-        RestauranteDto restauranteAtualDto = restauranteService.buscar(Id);
-
-        if (restauranteAtualDto == null){
+        try{
+            RestauranteDto restauranteDto = restauranteService.atualizarParcial(Id, campos);
+            return ResponseEntity.ok().body(restauranteDto);
+        }catch (EntidadeNaoEncontradaException e){
             return ResponseEntity.notFound().build();
         }
 
-        merge(campos, restauranteAtualDto);
-
-        return atualizar(restauranteAtualDto, Id);
     }
 
-    private static void merge(Map<String, Object> campos, RestauranteDto restauranteDestinoDto) {
-        campos.forEach((campo, valor) -> {
-            Field field = ReflectionUtils.findField(RestauranteDto.class, campo);
-            field.setAccessible(true);
 
-            // Obter o tipo do campo no DTO:
-            Class<?> fieldType = field.getType();
-
-            if(fieldType == BigDecimal.class){
-                ReflectionUtils.setField(field, restauranteDestinoDto, new BigDecimal(String.valueOf(valor)));
-            } else if (fieldType.isAssignableFrom(valor.getClass())) {
-                ReflectionUtils.setField(field, restauranteDestinoDto, valor);
-            } else {
-                throw new IllegalArgumentException("Valor incorreto para o campo:" + campo.toString());
-            }
-
-            System.out.println(campo + " = " + valor);
-        });
-    }
 
 
 }

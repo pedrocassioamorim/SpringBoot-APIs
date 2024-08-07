@@ -14,9 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -99,6 +102,19 @@ public class CadastroRestauranteService {
         return modelMapper.map(restauranteAtualizar.get(), RestauranteDto.class);
     }
 
+    public RestauranteDto atualizarParcial(Long Id, Map<String, Object> campos){
+        Optional<Restaurante> restaurante = restauranteRepository.findById(Id);
+        if (restaurante.isEmpty()){
+            throw new EntidadeNaoEncontradaException(String.format(NAO_FOI_ENCONTRADO_UM_RESTAURANTE_COM_O_ID_D, Id));
+        }
+
+        RestauranteDto restauranteAtual = modelMapper.map(restaurante, RestauranteDto.class);
+
+        merge(campos, restauranteAtual);
+
+        return modelMapper.map(restauranteAtual, RestauranteDto.class);
+    }
+
     public void excluir (Long Id){
         try{
             Optional<Restaurante> restaurante = restauranteRepository.findById(Id);
@@ -110,5 +126,24 @@ public class CadastroRestauranteService {
         }
     }
 
+    private static void merge(Map<String, Object> campos, RestauranteDto restauranteDestinoDto) {
+        campos.forEach((campo, valor) -> {
+            Field field = ReflectionUtils.findField(RestauranteDto.class, campo);
+            field.setAccessible(true);
 
+            // Obter o tipo do campo no DTO:
+            Class<?> fieldType = field.getType();
+
+            // Mapeando formatos especiais (BigDecimal)
+            if(fieldType == BigDecimal.class){
+                ReflectionUtils.setField(field, restauranteDestinoDto, new BigDecimal(String.valueOf(valor)));
+            } else if (fieldType.isAssignableFrom(valor.getClass())) {
+                ReflectionUtils.setField(field, restauranteDestinoDto, valor);
+            } else {
+                throw new IllegalArgumentException("Valor incorreto para o campo:" + campo.toString());
+            }
+
+            System.out.println(campo + " = " + valor);
+        });
+    }
 }
