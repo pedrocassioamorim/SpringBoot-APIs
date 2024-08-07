@@ -1,7 +1,6 @@
 package org.pedroamorim.projetobootcamp.domain.model;
 
 import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -33,18 +32,15 @@ public class Restaurante{
 
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Restaurante that = (Restaurante) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+        return Objects.equals(id, that.id) && Objects.equals(nome, that.nome) && Objects.equals(taxaFrete, that.taxaFrete) && Objects.equals(cozinha, that.cozinha);
     }
 
     @Override
-    public final int hashCode() {
-        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    public int hashCode() {
+        return Objects.hash(id, nome, taxaFrete, cozinha);
     }
 }
